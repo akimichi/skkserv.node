@@ -22,15 +22,28 @@ describe('service.js', () => {
 
   it('should receive a message event from single data event', (done)  => {
     const testClient = net.connect(testPort, () => {
-      testClient.write("abcdefg");
+      testClient.write("2 ");
     });
     testClient.on('data', (response) => {
       expect(
         response.toString()
       ).to.equal(
-        'abcdefg'
+        '0.0.1 '
       )
       done();
     });
   });
+  // it('should receive a message event from single data event', (done)  => {
+  //   const testClient = net.connect(testPort, () => {
+  //     testClient.write("abcdefg");
+  //   });
+  //   testClient.on('data', (response) => {
+  //     expect(
+  //       response.toString()
+  //     ).to.equal(
+  //       'abcdefg'
+  //     )
+  //     done();
+  //   });
+  // });
 });

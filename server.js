@@ -1,22 +1,10 @@
 "use strict;"
 
 
-const net = require('net');
+const service = require('./lib/service.js').create();
 
-
-
-const server = net.createServer(connection => {
-    connection.on('end', () => {
-      console.log('connection closed.');
-    });
-
-
-});
-
-
-server.listen(11111, '127.0.0.1', () => {
-  const addr = server.address();
+service.listen(11111, '127.0.0.1', () => {
+  const addr = service.address();
   console.log(`Listening Start on Server - ${addr.address}:${addr.port}`);
-
 });
 

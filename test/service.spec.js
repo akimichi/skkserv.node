@@ -5,19 +5,23 @@ const expect = require('expect.js'),
 const service = require('../lib/service.js');
 
 describe('service.js', () => {
+  const testPort = 11112;
+  // テスト毎に再利用する可変な変数
   let testServer = null;
-  let testClient = null;
 
-  // beforeEach(() => {
+  beforeEach(() => {
     testServer = service.create();
-    testServer.listen(11112, '127.0.0.1', () => {
+    testServer.listen(testPort, '127.0.0.1', () => {
       const addr = testServer.address();
-      console.log(`Listening Start on Test Server - ${addr.address}:${addr.port}`);
+      console.log(`Start a Test Server - ${addr.address}:${addr.port}`);
     });
-  // });
+  });
+  afterEach(() => {
+     testServer.close();
+  });
 
   it('should receive a message event from single data event', (done)  => {
-    testClient = net.connect(11112, () => {
+    const testClient = net.connect(testPort, () => {
       testClient.write("abcdefg");
     });
     testClient.on('data', (response) => {
@@ -26,7 +30,6 @@ describe('service.js', () => {
       ).to.equal(
         'abcdefg'
       )
-      testServer.close();
       done();
     });
   });

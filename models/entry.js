@@ -1,3 +1,4 @@
+'use strict';
 // models/entry.js
 
 const mongoose     = require('mongoose');
@@ -10,12 +11,12 @@ const Schema       = mongoose.Schema;
 
 const EntrySchema   = new Schema({
   yomi: {type: String, unique: true, required: true},
-  candidates: Array  
+  candidates: Array,
   // SubDocument: Koho
   // candidates: [
   //   CandicateSchema
   // ]
-  createdOn: {type: Date, default: Date.now, required: true},
+  createdOn: {type: Date, default: Date.now, required: true}
 });
 
 

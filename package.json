@@ -4,8 +4,8 @@
   "description": "A skkservser in node.js",
   "main": "server.js",
   "scripts": {
-    "test": "mocha",
-    "start": "node server.js"
+    "test": "NODE_ENV=test mocha test/**.js",
+    "start": "NODE_ENV=development node server.js"
   },
   "keywords": [
     "skkserv"
@@ -15,6 +15,10 @@
   "devDependencies": {
     "expect.js": "0.3.1",
     "mocha": "3.4.2",
-    "mongoose": "4.11.1"
+    "should": "11.2.1"
+  },
+  "dependencies": {
+    "mongoose": "4.11.1",
+    "bluebird": "3.5.0"
   }
 }

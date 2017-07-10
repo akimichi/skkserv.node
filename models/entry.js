@@ -20,10 +20,12 @@ const EntrySchema   = new Schema({
 });
 
 EntrySchema.statics.henkan = function (yomi, callback) {
-  this.findOne({ yomi: yomi }, function (err, entry) {
+  // this.findOne({ 'yomi': yomi }, 'yomi candidates', function (err, entry) {
+  this.findOne({ 'yomi': yomi }, function (err, entry) {
     if (err) {
       callback(err);
     } else if (entry) {
+      console.log(`entry: ${entry}`);
       const candidates = entry.candidates.join("/");
       const response = `1/${candidates}/\n`;
       callback(null, response);

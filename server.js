@@ -11,8 +11,8 @@ mongoose.connect(config(env).db.mongo.uri,  {
 });
 
 const net = require('net');
-const service = require('./lib/service.js');
-const server = net.createServer(service);
+const skkService = require('./lib/service.js').skk;
+const server = net.createServer(skkService);
 
 server.listen(11111, '127.0.0.1', () => {
   const addr = server.address();

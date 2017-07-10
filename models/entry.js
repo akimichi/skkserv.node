@@ -19,6 +19,19 @@ const EntrySchema   = new Schema({
   createdOn: {type: Date, default: Date.now, required: true}
 });
 
+EntrySchema.statics.henkan = function (yomi, callback) {
+  this.findOne({ yomi: yomi }, function (err, entry) {
+    if (err) {
+      callback(err);
+    } else if (entry) {
+      const candidates = entry.candidates.join("/");
+      const response = `1/${candidates}/\n`;
+      callback(null, response);
+    } else {
+      callback(null, `4${yomi} `);
+    }
+  });
+}
 
 module.exports = mongoose.model('Entry', EntrySchema);
 

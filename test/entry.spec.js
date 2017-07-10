@@ -13,7 +13,7 @@ const helper = require('./helper.js');
 describe('Entry model', () => {
   const entry = entries.tatsukawa;
 
-  after(done => {
+  before(done => {
     entry.remove()
       .then(() => {
         done(); 
@@ -29,6 +29,22 @@ describe('Entry model', () => {
       expect(document.yomi).to.equal("たつかわ")
       done();
     });
-
+  });
+  describe('Entry#henkan', () => {
+    it('should be able to henkan', (done) => {
+      const ai = new Entry({
+        yomi: 'あい',
+        candidates: ["愛","藍","相"]
+      });
+      ai.save((err, document) => {
+        should.not.exist(err);
+        Entry.henkan('あい', (err, response) => {
+          expect(response).to.equal(
+            '1/愛/藍/相/\n'
+          )
+          done();
+        });
+      });
+    });
   });
 });

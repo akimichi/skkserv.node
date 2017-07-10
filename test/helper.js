@@ -16,8 +16,11 @@ before((done) => {
   }
 
   if (mongoose.connection.readyState === 0) {
-    const options = { promiseLibrary: require('bluebird') };
-      const uri = config.db.mongo.uri;
+    const options = { 
+      useMongoClient: true,
+      promiseLibrary: require('bluebird') 
+    };
+    const uri = config.db.mongo.uri;
     mongoose.connect(uri, options, (err) => {
       if (err) {
         throw err;

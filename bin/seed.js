@@ -14,7 +14,10 @@ const loadDictionary = require('../lib/loadDictionary.js');
 
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
-const options = { promiseLibrary: require('bluebird') };
+const options = { 
+  useMongoClient: true,
+  promiseLibrary: require('bluebird') 
+};
 const DB = mongoose.connect(
   uri,
   options

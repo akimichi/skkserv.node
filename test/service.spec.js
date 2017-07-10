@@ -10,7 +10,7 @@ describe('service.js', () => {
   let testServer = null;
 
   beforeEach(() => {
-    testServer = service.create();
+    testServer = net.createServer(service);
     testServer.listen(testPort, '127.0.0.1', () => {
       const addr = testServer.address();
       console.log(`Start a Test Server - ${addr.address}:${addr.port}`);

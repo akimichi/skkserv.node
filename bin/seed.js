@@ -59,21 +59,22 @@ Entry.remove({},(err) => {
     throw new Error(err)
   }
   console.log('Entry removed');
-  loadDictionary.load('./resource/SKK-JISYO.L', callback);
-  // loadDictionary.load('./resource/SKK-JISYO.S', callback);
+  loadDictionary.load('./resource/SKK-JISYO.ML', callback);
+  // loadDictionary.load('./resource/SKK-JISYO.L', callback);
+  // // loadDictionary.load('./resource/SKK-JISYO.S', callback);
   // loadDictionary.load('./resource/SKK-JISYO.M', callback);
-  loadDictionary.load('./resource/SKK-JISYO.fullname', callback);
-  loadDictionary.load('./resource/SKK-JISYO.jinmei', callback);
-  loadDictionary.load('./resource/SKK-JISYO.propernoun', callback);
-  loadDictionary.load('./resource/SKK-JISYO.geo', callback);
-  loadDictionary.load('./resource/SKK-JISYO.station', callback);
+  // loadDictionary.load('./resource/SKK-JISYO.fullname', callback);
+  // loadDictionary.load('./resource/SKK-JISYO.jinmei', callback);
+  // loadDictionary.load('./resource/SKK-JISYO.propernoun', callback);
+  // loadDictionary.load('./resource/SKK-JISYO.geo', callback);
+  // loadDictionary.load('./resource/SKK-JISYO.station', callback);
   loadDictionary.load('./resource/SKK-JISYO.zipcode', callback);
-  loadDictionary.load('./resource/SKK-JISYO.mazegaki', callback);
-  loadDictionary.load('./resource/SKK-JISYO.law', callback);
-  // loadDictionary.load('./resource/SKK-JISYO.lisp', callback);
-  // loadDictionary.load('./resource/SKK-JISYO.JIS2', callback);
-  // loadDictionary.load('./resource/SKK-JISYO.JIS2004', callback);
-  loadDictionary.load('./resource/SKK-JISYO.JIS3_4', callback);
+  // loadDictionary.load('./resource/SKK-JISYO.mazegaki', callback);
+  // loadDictionary.load('./resource/SKK-JISYO.law', callback);
+  // // loadDictionary.load('./resource/SKK-JISYO.lisp', callback);
+  // // loadDictionary.load('./resource/SKK-JISYO.JIS2', callback);
+  // // loadDictionary.load('./resource/SKK-JISYO.JIS2004', callback);
+  // loadDictionary.load('./resource/SKK-JISYO.JIS3_4', callback);
 })
 
 

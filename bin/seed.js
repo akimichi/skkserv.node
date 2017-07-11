@@ -25,14 +25,6 @@ const DB = mongoose.connect(
 
 const Entry = require('../models/entry.js');
 
-// あらかじめデータを消去しておく
-Entry.remove({},(err) => {
-  if(err) {
-    throw new Error(err)
-  }
-  console.log('Entry removed');
-})
-
 const callback = (line) => {
   if(/^;;.+$/.test(line) == false) {
     // console.log(line) 
@@ -47,20 +39,45 @@ const callback = (line) => {
         yomi: yomi,
         candidates: candidates 
       });
-
-      entry.save()
-        .then((savedEntry) => {
-        })
-        .catch((error) => {
-          console.log(error);
-          mongoose.disconnect();
-        });
+      return entry; 
+      // entry.save()
+      //   .then((savedEntry) => {
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //     mongoose.disconnect();
+      //   });
+    } else {
+      return null;
     }
   }
 };
 
-loadDictionary.load('./resource/SKK-JISYO.L', callback);
-loadDictionary.load('./resource/SKK-JISYO.fullname', callback);
+// あらかじめデータを消去しておく
+Entry.remove({},(err) => {
+  if(err) {
+    throw new Error(err)
+  }
+  console.log('Entry removed');
+  loadDictionary.load('./resource/SKK-JISYO.L', callback);
+  // loadDictionary.load('./resource/SKK-JISYO.S', callback);
+  // loadDictionary.load('./resource/SKK-JISYO.M', callback);
+  loadDictionary.load('./resource/SKK-JISYO.fullname', callback);
+  loadDictionary.load('./resource/SKK-JISYO.jinmei', callback);
+  loadDictionary.load('./resource/SKK-JISYO.propernoun', callback);
+  loadDictionary.load('./resource/SKK-JISYO.geo', callback);
+  loadDictionary.load('./resource/SKK-JISYO.station', callback);
+  loadDictionary.load('./resource/SKK-JISYO.zipcode', callback);
+  loadDictionary.load('./resource/SKK-JISYO.mazegaki', callback);
+  loadDictionary.load('./resource/SKK-JISYO.law', callback);
+  // loadDictionary.load('./resource/SKK-JISYO.lisp', callback);
+  // loadDictionary.load('./resource/SKK-JISYO.JIS2', callback);
+  // loadDictionary.load('./resource/SKK-JISYO.JIS2004', callback);
+  loadDictionary.load('./resource/SKK-JISYO.JIS3_4', callback);
+})
+
+
+
 
 
 process.on('SIGINT', () =>  {

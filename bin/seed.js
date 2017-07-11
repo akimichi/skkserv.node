@@ -60,6 +60,7 @@ const callback = (line) => {
 };
 
 loadDictionary.load('./resource/SKK-JISYO.L', callback);
+loadDictionary.load('./resource/SKK-JISYO.fullname', callback);
 
 
 process.on('SIGINT', () =>  {

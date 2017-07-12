@@ -4,8 +4,10 @@
   "description": "A skkservser in node.js",
   "main": "server.js",
   "scripts": {
-    "test": "NODE_ENV=test mocha test/**.js",
-    "start": "NODE_ENV=development node server.js"
+    "test": "NODE_ENV=test mocha --recursive test/**.js",
+    "start": "NODE_ENV=development node server.js",
+    "start-server": "NODE_ENV=production node server.js",
+    "seed": "NODE_ENV=production node bin/seed.js"
   },
   "keywords": [
     "skkserv"

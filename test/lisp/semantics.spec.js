@@ -37,6 +37,22 @@ describe('式の評価', () => {
     ).to.eql(
       ID.unit(0)
     );
+    expect(
+      evaluate(
+        exp.if(exp.isEqual(exp.bool(false),exp.bool(false)), 
+          exp.num(1), exp.num(0)),
+        env.empty)
+    ).to.eql(
+      ID.unit(1)
+    );
+    expect(
+      evaluate(
+        exp.if(exp.isEqual(exp.bool(true),exp.bool(false)), 
+          exp.num(1), exp.num(0)),
+        env.empty)
+    ).to.eql(
+      ID.unit(0)
+    );
     next();
   });
   describe('ブール演算のテスト', () => {

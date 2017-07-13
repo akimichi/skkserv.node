@@ -24,6 +24,21 @@ describe('式の評価', () => {
     );
     next();
   });
+  it('if式の評価のテスト', (next) => {
+    expect(
+      evaluate(exp.if(exp.bool(true), exp.num(1), exp.num(0)),
+          env.empty)
+    ).to.eql(
+      ID.unit(1)
+    );
+    expect(
+      evaluate(exp.if(exp.bool(false), exp.num(1), exp.num(0)),
+          env.empty)
+    ).to.eql(
+      ID.unit(0)
+    );
+    next();
+  });
   describe('ブール演算のテスト', () => {
     it('andのテスト', (next) => {
       expect(

@@ -119,6 +119,17 @@ describe('パーサーコンビネーター', () => {
   describe("派生したパーサー", (next) => {
     it("digit", (next) => {
       expect(
+        Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.digit()
+            )(List.fromString("123"))
+          )
+        )
+      ).to.eql(
+        1
+      );
+      expect(
         PP.print(
           Parser.parse(
             Parser.digit()
@@ -353,6 +364,18 @@ describe('パーサーコンビネーター', () => {
         )
       ).to.eql(
         '[([+,nil],[]),nil]'
+      );
+      next();
+    });
+    it("boolean", (next) => {
+      expect(
+        PP.print(
+          Parser.parse(
+            Parser.boolean()
+          )(List.fromString("  #t  "))
+        )
+      ).to.eql(
+        '[([#,t,nil],[]),nil]'
       );
       next();
     });

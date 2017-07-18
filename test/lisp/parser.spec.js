@@ -336,6 +336,17 @@ describe('パーサーコンビネーター', () => {
     });
     it("numeric", (next) => {
       expect(
+        Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.numeric()
+            )(List.fromString("   -123   "))
+          )
+        )
+      ).to.eql(
+        -123 
+      );
+      expect(
         PP.print(
           Parser.parse(
             Parser.numeric()

@@ -77,7 +77,7 @@ describe('パーサーコンビネーター', () => {
         PP.print(
           Parser.parse(parser)(input)
         )
-      ).to.eql('[([+,nil],[]),nil]');
+      ).to.eql('[(+,[]),nil]');
       next();
     });
   });
@@ -161,7 +161,7 @@ describe('パーサーコンビネーター', () => {
           )(List.fromString("abcdef"))
         )
       ).to.eql(
-        '[([a,b,c,nil],[d,e,f,nil]),nil]'
+        '[(abc,[d,e,f,nil]),nil]'
       );
       next();
     });
@@ -363,7 +363,7 @@ describe('パーサーコンビネーター', () => {
           )(List.fromString("  +  "))
         )
       ).to.eql(
-        '[([+,nil],[]),nil]'
+        '[(+,[]),nil]'
       );
       next();
     });
@@ -375,7 +375,7 @@ describe('パーサーコンビネーター', () => {
           )(List.fromString("  #t  "))
         )
       ).to.eql(
-        '[([#,t,nil],[]),nil]'
+        '[(#t,[]),nil]'
       );
       next();
     });

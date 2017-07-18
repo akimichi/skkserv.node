@@ -369,13 +369,35 @@ describe('パーサーコンビネーター', () => {
     });
     it("boolean", (next) => {
       expect(
+        Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.boolean()
+            )(List.fromString("  #t  "))
+          )
+        )
+      ).to.eql(
+        true 
+      );
+      expect(
+        Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.boolean()
+            )(List.fromString("#f  "))
+          )
+        )
+      ).to.eql(
+        false 
+      );
+      expect(
         PP.print(
           Parser.parse(
             Parser.boolean()
           )(List.fromString("  #t  "))
         )
       ).to.eql(
-        '[(#t,[]),nil]'
+        '[(true,[]),nil]'
       );
       next();
     });

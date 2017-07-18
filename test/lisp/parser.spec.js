@@ -69,7 +69,7 @@ describe('パーサーコンビネーター', () => {
     });
     it("flapMap", (next) => {
       var input = List.fromString("  +  ");
-      var add_or_subtract = Parser.alt(Parser.symbol(List.fromString("+")))(Parser.symbol(List.fromString("-")));
+      var add_or_subtract = Parser.alt(Parser.symbol(List.fromString("+")), Parser.symbol(List.fromString("-")));
       var parser = Parser.flatMap(add_or_subtract)((operator) => {
         return Parser.pure(operator);
       });
@@ -98,7 +98,7 @@ describe('パーサーコンビネーター', () => {
       expect(
         PP.print(
           Parser.parse(
-            Parser.alt(Parser.item)(Parser.pure("d"))
+            Parser.alt(Parser.item, Parser.pure("d"))
           )(input)
         )
       ).to.eql(
@@ -107,7 +107,7 @@ describe('パーサーコンビネーター', () => {
       expect(
         PP.print(
           Parser.parse(
-            Parser.alt(Parser.empty)(Parser.pure("d"))
+            Parser.alt(Parser.empty, Parser.pure("d"))
           )(input)
         )
       ).to.eql(

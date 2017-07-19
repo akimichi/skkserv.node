@@ -209,7 +209,7 @@ describe('パーサーコンビネーター', () => {
         )(List.fromString("abc def"))
       )
     ).to.eql(
-      '[([a,b,c,nil],[ ,d,e,f,nil]),nil]'
+      '[(Symbol(abc),[ ,d,e,f,nil]),nil]'
     );
     next();
   });
@@ -306,7 +306,7 @@ describe('パーサーコンビネーター', () => {
           )(List.fromString("   abc"))
         )
       ).to.eql(
-        '[([a,b,c,nil],[]),nil]'
+        '[(Symbol(abc),[]),nil]'
       );
       next();
     });
@@ -453,36 +453,36 @@ describe('パーサーコンビネーター', () => {
     });
   });
   describe("S式", (next) => {
-    it("sexp", (next) => {
-      expect(
-        PP.print(
-          Parser.parse(
-            Parser.sexp()
-          )(List.fromString("0.12"))
-        )
-      ).to.eql(
-        '[(0.12,[]),nil]'
-      );
-      expect(
-        PP.print(
-          Parser.parse(
-            Parser.sexp()
-          )(List.fromString("#f"))
-        )
-      ).to.eql(
-        '[(false,[]),nil]'
-      );
-      expect(
-        PP.print(
-          Parser.parse(
-            Parser.sexp()
-          )(List.fromString("\"a string\""))
-        )
-      ).to.eql(
-        '[(a string,[]),nil]'
-      );
-      next();
-    });
+    // it("sexp", (next) => {
+    //   expect(
+    //     PP.print(
+    //       Parser.parse(
+    //         Parser.sexp()
+    //       )(List.fromString("0.12"))
+    //     )
+    //   ).to.eql(
+    //     '[(0.12,[]),nil]'
+    //   );
+    //   expect(
+    //     PP.print(
+    //       Parser.parse(
+    //         Parser.sexp()
+    //       )(List.fromString("#f"))
+    //     )
+    //   ).to.eql(
+    //     '[(false,[]),nil]'
+    //   );
+    //   expect(
+    //     PP.print(
+    //       Parser.parse(
+    //         Parser.sexp()
+    //       )(List.fromString("\"a string\""))
+    //     )
+    //   ).to.eql(
+    //     '[(a string,[]),nil]'
+    //   );
+    //   next();
+    // });
 
   });
 });

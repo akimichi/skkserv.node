@@ -378,6 +378,27 @@ describe('パーサーコンビネーター', () => {
       );
       next();
     });
+    it("string", (next) => {
+      expect(
+        PP.print(
+          Parser.parse(
+            Parser.string()
+          )(List.fromString("\"abc\""))
+        )
+      ).to.eql(
+        '[(abc,[]),nil]'
+      );
+      // expect(
+      //   PP.print(
+      //     Parser.parse(
+      //       Parser.stringContent()
+      //     )(List.fromString("abc"))
+      //   )
+      // ).to.eql(
+      //   '[(abc,[]),nil]'
+      // );
+      next();
+    });
     it("boolean", (next) => {
       expect(
         Pair.left(

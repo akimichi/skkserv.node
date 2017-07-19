@@ -388,6 +388,24 @@ describe('パーサーコンビネーター', () => {
       ).to.eql(
         '[(abc,[]),nil]'
       );
+      expect(
+        PP.print(
+          Parser.parse(
+            Parser.string()
+          )(List.fromString("  \"abc\"  "))
+        )
+      ).to.eql(
+        '[(abc,[]),nil]'
+      );
+      expect(
+        PP.print(
+          Parser.parse(
+            Parser.string()
+          )(List.fromString("  \"  abc  \"  "))
+        )
+      ).to.eql(
+        '[(  abc  ,[]),nil]'
+      );
       // expect(
       //   PP.print(
       //     Parser.parse(

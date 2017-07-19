@@ -153,11 +153,11 @@ describe('パーサーコンビネーター', () => {
 
       next();
     });
-    it("string", (next) => {
+    it("chars", (next) => {
       expect(
         PP.print(
           Parser.parse(
-            Parser.string(List.fromString("abc"))
+            Parser.chars(List.fromString("abc"))
           )(List.fromString("abcdef"))
         )
       ).to.eql(

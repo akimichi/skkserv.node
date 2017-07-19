@@ -452,4 +452,37 @@ describe('パーサーコンビネーター', () => {
       next();
     });
   });
+  describe("S式", (next) => {
+    it("sexp", (next) => {
+      expect(
+        PP.print(
+          Parser.parse(
+            Parser.sexp()
+          )(List.fromString("0.12"))
+        )
+      ).to.eql(
+        '[(0.12,[]),nil]'
+      );
+      expect(
+        PP.print(
+          Parser.parse(
+            Parser.sexp()
+          )(List.fromString("#f"))
+        )
+      ).to.eql(
+        '[(false,[]),nil]'
+      );
+      expect(
+        PP.print(
+          Parser.parse(
+            Parser.sexp()
+          )(List.fromString("\"a string\""))
+        )
+      ).to.eql(
+        '[(a string,[]),nil]'
+      );
+      next();
+    });
+
+  });
 });

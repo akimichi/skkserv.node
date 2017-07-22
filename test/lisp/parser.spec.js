@@ -342,28 +342,89 @@ describe('パーサーコンビネーター', () => {
               Parser.numeric()
             )(List.fromString("   -123   "))
           )
-        )
+        )({
+          num: (value) => {
+            return value;
+          }
+        })
       ).to.eql(
         -123 
       );
       expect(
-        PP.print(
-          Parser.parse(
-            Parser.numeric()
-          )(List.fromString("   -123   "))
-        )
+        Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.numeric()
+            )(List.fromString("   0.123   "))
+          )
+        )({
+          num: (value) => {
+            return value;
+          }
+        })
       ).to.eql(
-        '[(-123,[]),nil]'
+        0.123
+      );
+      // expect(
+      //   PP.print(
+      //     Parser.parse(
+      //       Parser.numeric()
+      //     )(List.fromString("   -123   "))
+      //   )
+      // ).to.eql(
+      //   '[(-123,[]),nil]'
+      // );
+      // expect(
+      //   PP.print(
+      //     Parser.parse(
+      //       Parser.numeric()
+      //     )(List.fromString("   0.123   "))
+      //   )
+      // ).to.eql(
+      //   '[(0.123,[]),nil]'
+      // );
+      next();
+    });
+    it("boolean", (next) => {
+      expect(
+        Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.boolean()
+            )(List.fromString("  #t  "))
+          )
+        )({
+          bool: (value) => {
+            return value;
+          }
+        })
+      ).to.eql(
+        true 
       );
       expect(
-        PP.print(
-          Parser.parse(
-            Parser.numeric()
-          )(List.fromString("   0.123   "))
-        )
+        Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.boolean()
+            )(List.fromString("#f  "))
+          )
+        )({
+          bool: (value) => {
+            return value;
+          }
+        })
       ).to.eql(
-        '[(0.123,[]),nil]'
+        false 
       );
+      // expect(
+      //   PP.print(
+      //     Parser.parse(
+      //       Parser.boolean()
+      //     )(List.fromString("  #t  "))
+      //   )
+      // ).to.eql(
+      //   '[(true,[]),nil]'
+      // );
       next();
     });
     it("symbol", (next) => {
@@ -380,75 +441,47 @@ describe('パーサーコンビネーター', () => {
     });
     it("string", (next) => {
       expect(
-        PP.print(
-          Parser.parse(
-            Parser.string()
-          )(List.fromString("\"abc\""))
-        )
+        Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.string()
+            )(List.fromString("\"abc\""))
+          )
+        )({
+          string: (value) => {
+            return value;
+          }
+        })
       ).to.eql(
-        '[(abc,[]),nil]'
-      );
-      expect(
-        PP.print(
-          Parser.parse(
-            Parser.string()
-          )(List.fromString("  \"abc\"  "))
-        )
-      ).to.eql(
-        '[(abc,[]),nil]'
-      );
-      expect(
-        PP.print(
-          Parser.parse(
-            Parser.string()
-          )(List.fromString("  \"  abc  \"  "))
-        )
-      ).to.eql(
-        '[(  abc  ,[]),nil]'
+        "abc" 
       );
       // expect(
       //   PP.print(
       //     Parser.parse(
-      //       Parser.stringContent()
-      //     )(List.fromString("abc"))
+      //       Parser.string()
+      //     )(List.fromString("\"abc\""))
       //   )
       // ).to.eql(
       //   '[(abc,[]),nil]'
       // );
-      next();
-    });
-    it("boolean", (next) => {
-      expect(
-        Pair.left(
-          List.head(
-            Parser.parse(
-              Parser.boolean()
-            )(List.fromString("  #t  "))
-          )
-        )
-      ).to.eql(
-        true 
-      );
-      expect(
-        Pair.left(
-          List.head(
-            Parser.parse(
-              Parser.boolean()
-            )(List.fromString("#f  "))
-          )
-        )
-      ).to.eql(
-        false 
-      );
-      expect(
-        PP.print(
-          Parser.parse(
-            Parser.boolean()
-          )(List.fromString("  #t  "))
-        )
-      ).to.eql(
-        '[(true,[]),nil]'
-      );
+      // expect(
+      //   PP.print(
+      //     Parser.parse(
+      //       Parser.string()
+      //     )(List.fromString("  \"abc\"  "))
+      //   )
+      // ).to.eql(
+      //   '[(abc,[]),nil]'
+      // );
+      // expect(
+      //   PP.print(
+      //     Parser.parse(
+      //       Parser.string()
+      //     )(List.fromString("  \"  abc  \"  "))
+      //   )
+      // ).to.eql(
+      //   '[(  abc  ,[]),nil]'
+      // );
       next();
     });
   });

@@ -1,10 +1,12 @@
 "use strict";
 
-var expect = require('expect.js');
-var List = require('../../lib/lisp/list.js');
-var Pair = require('../../lib/lisp/pair.js');
-var Data = require('../../lib/lisp/data.js');
-var PP = require('../../lib/lisp/pprinter.js');
+const expect = require('expect.js'),
+ Pair = require('kansuu.js').pair,
+ List = require('kansuu.js').monad.list;
+// var List = require('../../lib/lisp/list.js');
+// var Pair = require('../../lib/lisp/pair.js');
+// var Data = require('../../lib/lisp/data.js');
+// var PP = require('../../lib/lisp/pprinter.js');
 var Parser = require('../../lib/lisp/parser.js');
 
 describe('パーサーコンビネーター', () => {
@@ -12,22 +14,53 @@ describe('パーサーコンビネーター', () => {
   describe("parse", (next) => {
     it("pure", (next) => {
       expect(
-        PP.print(Parser.parse(Parser.pure(1))(abc))
+        List.toArray(
+          List.head(
+            Parser.parse(Parser.pure(1))(abc)
+          ))
       ).to.eql(
-        '[(1,[a,b,c,nil]),nil]'
+        ['1', 'a','b','c']
       );
+      // expect(
+      //   PP.print(Parser.parse(Parser.pure(1))(abc))
+      // ).to.eql(
+      //   '[(1,[a,b,c,nil]),nil]'
+      // );
       next();
     });
     it("item", (next) => {
       expect(
-        PP.print(Parser.item(List.empty()))
+        List.isEmpty(
+            Parser.item(List.empty())
+          )
+        // PP.print(Parser.item(List.empty()))
       ).to.eql(
-        '[]'
+        []
       );
       expect(
-        PP.print(Parser.item(List.fromString("abc")))
+        List.toArray(
+          List.head(
+          Parser.item(List.fromString("abc"))))
       ).to.eql(
-        '[(a,[b,c,nil]),nil]'
+        ['a','b','c']
+      );
+      // expect(
+      //   PP.print(Parser.item(List.fromString("abc")))
+      // ).to.eql(
+      //   '[(a,[b,c,nil]),nil]'
+      // );
+      next();
+    });
+    it("empty", (next) => {
+      var input = List.fromString("abc");
+      expect(
+        // PP.print(
+        List.toArray(
+          Parser.parse(Parser.empty)(input)
+        )
+      ).to.eql(
+        []
+        // '[]'
       );
       next();
     });
@@ -39,11 +72,14 @@ describe('パーサーコンビネーター', () => {
         return s.toUpperCase();
       };
       expect(
-        PP.print(
-          Parser.parse(Parser.fmap(toUpper)(Parser.item))(input)
-        )
+        // PP.print(
+        List.toArray(
+          List.head(
+            Parser.parse(Parser.fmap(toUpper)(Parser.item))(input)
+          ))
       ).to.eql(
-        '[(A,[b,c,nil]),nil]'
+        ['A','b','c']
+        // '[(A,[b,c,nil]),nil]'
       );
       next();
     });
@@ -59,11 +95,15 @@ describe('パーサーコンビネーター', () => {
         });
       });
       expect(
-        PP.print(
-          three(input)
-        )
+        // PP.print(
+        Pair.toArray(
+        Pair.left(
+          List.head(
+            three(input)
+          )))
       ).to.eql(
-        '[((a,c),[d,e,f,nil]),nil]'
+        ['a','c']
+        // '[((a,c),[d,e,f,nil]),nil]'
       );
       next();
     });
@@ -74,44 +114,44 @@ describe('パーサーコンビネーター', () => {
         return Parser.pure(operator);
       });
       expect(
-        PP.print(
-          Parser.parse(parser)(input)
+        // PP.print(
+        List.toArray(
+          List.head(
+            Parser.parse(parser)(input)
+          )
         )
-      ).to.eql('[(+,[]),nil]');
+      ).to.eql(
+        ['+']
+        // '[(+,[]),nil]'
+      );
       next();
     });
   });
   describe("alternative", (next) => {
-    it("empty", (next) => {
-      var input = List.fromString("abc");
-      expect(
-        PP.print(
-          Parser.parse(Parser.empty)(input)
-        )
-      ).to.eql(
-        '[]'
-      );
-      next();
-    });
     it("alt", (next) => {
       var input = List.fromString("abc");
       expect(
-        PP.print(
+        // PP.print(
+        List.toArray(
+          List.head(
           Parser.parse(
             Parser.alt(Parser.item, Parser.pure("d"))
           )(input)
-        )
+        ))
       ).to.eql(
-        '[(a,[b,c,nil]),nil]'
+        ['a','b','c']
+        // '[(a,[b,c,nil]),nil]'
       );
       expect(
-        PP.print(
-          Parser.parse(
-            Parser.alt(Parser.empty, Parser.pure("d"))
-          )(input)
-        )
+        List.toArray(
+          List.head(
+            Parser.parse(
+              Parser.alt(Parser.empty, Parser.pure("d"))
+            )(input)
+          ))
       ).to.eql(
-        '[(d,[a,b,c,nil]),nil]'
+        ['d','a','b','c']
+        // '[(d,[a,b,c,nil]),nil]'
       );
       next();
     });
@@ -119,49 +159,44 @@ describe('パーサーコンビネーター', () => {
   describe("派生したパーサー", (next) => {
     it("digit", (next) => {
       expect(
-        Pair.left(
+        List.toArray(
           List.head(
             Parser.parse(
               Parser.digit()
             )(List.fromString("123"))
-          )
-        )
+          ))
       ).to.eql(
-        1
-      );
-      expect(
-        PP.print(
-          Parser.parse(
-            Parser.digit()
-          )(List.fromString("123"))
-        )
-      ).to.eql(
-        '[(1,[2,3,nil]),nil]'
+        ['1','2','3']
+        //   '[(1,[2,3,nil]),nil]'
       );
       next();
     });
     it("alphanum", (next) => {
       expect(
-        PP.print(
-          Parser.parse(
-            Parser.alphanum()
-          )(List.fromString("123"))
-        )
+        List.toArray(
+          List.head(
+            Parser.parse(
+              Parser.alphanum()
+            )(List.fromString("123"))
+          ))
       ).to.eql(
-        '[(1,[2,3,nil]),nil]'
+        ['1','2','3']
+        // '[(1,[2,3,nil]),nil]'
       );
 
       next();
     });
     it("chars", (next) => {
       expect(
-        PP.print(
-          Parser.parse(
-            Parser.chars(List.fromString("abc"))
-          )(List.fromString("abcdef"))
-        )
+        List.toArray(
+          List.head(
+            Parser.parse(
+              Parser.chars(List.fromString("abc"))
+            )(List.fromString("abcdef"))
+          ))
       ).to.eql(
-        '[(abc,[d,e,f,nil]),nil]'
+        ['abc','d','e','f']
+        // '[(abc,[d,e,f,nil]),nil]'
       );
       next();
     });
@@ -169,168 +204,196 @@ describe('パーサーコンビネーター', () => {
   describe("manyパーサ", (next) => {
     it("many digit", (next) => {
       expect(
-        PP.print(
-          Parser.parse(
-            Parser.many(Parser.digit())
-          )(List.fromString("123abc"))
-        )
+        List.toArray(
+          Pair.left(
+            List.head(
+              Parser.parse(
+                Parser.many(Parser.digit())
+              )(List.fromString("123abc"))
+            )))
       ).to.eql(
-        '[([1,2,3,nil],[a,b,c,nil]),nil]'
+        ['1','2','3']
+        // '[([1,2,3,nil],[a,b,c,nil]),nil]'
       );
       expect(
-        PP.print(
-          Parser.parse(
-            Parser.many(Parser.digit())
-          )(List.fromString("abc"))
-        )
+        List.toArray(
+          Pair.left(
+            List.head(
+              Parser.parse(
+                Parser.many(Parser.digit())
+              )(List.fromString("abc"))
+            )))
       ).to.eql(
-        '[([],[a,b,c,nil]),nil]'
+        []
+        // '[([],[a,b,c,nil]),nil]'
       );
       next();
     });
     it("some digit", (next) => {
       expect(
-        PP.print(
+        List.toArray(
           Parser.parse(
             Parser.some(Parser.digit())
           )(List.fromString("abc"))
         )
       ).to.eql(
-        '[]'
+        []
       );
       next();
     });
   });
   it("ident", (next) => {
     expect(
-      PP.print(
-        Parser.parse(
-          Parser.ident()
-        )(List.fromString("abc def"))
-      )
+      Pair.left(
+        List.head(
+          Parser.parse(
+            Parser.ident()
+          )(List.fromString("abc def"))
+        )).toString()
     ).to.eql(
-      '[(Symbol(abc),[ ,d,e,f,nil]),nil]'
+      'Symbol(abc)'
+      // '[(Symbol(abc),[ ,d,e,f,nil]),nil]'
     );
     next();
   });
   it("nat", (next) => {
     expect(
-      PP.print(
-        Parser.parse(
-          Parser.nat()
-        )(List.fromString("123"))
-      )
+      List.toArray(
+        List.head(
+          Parser.parse(
+            Parser.nat()
+          )(List.fromString("123"))
+        ))
     ).to.eql(
-      '[(123,[]),nil]'
+      [123]
     );
     next();
   });
   it("space", (next) => {
     expect(
-      PP.print(
-        Parser.parse(
-          Parser.space()
-        )(List.fromString("   abc"))
-      )
+      Pair.left(
+        List.head(
+          Parser.parse(
+            Parser.space()
+          )(List.fromString("   abc"))
+        ))
     ).to.eql(
-      '[((),[a,b,c,nil]),nil]'
+      undefined
+      // '[((),[a,b,c,nil]),nil]'
     );
     next();
   });
   it("int", (next) => {
     expect(
-      PP.print(
-        Parser.parse(
-          Parser.int.call(Parser)
-        )(List.fromString("-123 abc"))
-      )
+      Pair.left(
+        List.head(
+          Parser.parse(
+            Parser.int(Parser)
+          )(List.fromString("-123 abc"))
+        ))
     ).to.eql(
-      '[(-123,[a,b,c,nil]),nil]'
+      -123
+      // '[(-123,[a,b,c,nil]),nil]'
     );
     expect(
-      PP.print(
-        Parser.parse(
-          Parser.int.call(Parser)
-        )(List.fromString("123 abc"))
-      )
+      Pair.left(
+        List.head(
+          Parser.parse(
+            Parser.int(Parser)
+          )(List.fromString("123 abc"))
+        ))
     ).to.eql(
-      '[(123,[a,b,c,nil]),nil]'
+      123
     );
     next();
   });
   it("float", (next) => {
     expect(
-      PP.print(
-        Parser.parse(
-          Parser.float.call(Parser)
-        )(List.fromString("0.1"))
-      )
+      Pair.left(
+        List.head(
+          Parser.parse(
+            Parser.float(Parser)
+          )(List.fromString("0.1"))
+        ))
     ).to.eql(
-      '[(0.1,[]),nil]'
+      0.1
+      // '[(0.1,[]),nil]'
     );
     expect(
-      PP.print(
-        Parser.parse(
-          Parser.float.call(Parser)
-        )(List.fromString("0.123"))
-      )
+      Pair.left(
+        List.head(
+          Parser.parse(
+            Parser.float(Parser)
+          )(List.fromString("0.123"))
+        ))
     ).to.eql(
-      '[(0.123,[]),nil]'
+      0.123
+      // '[(0.123,[]),nil]'
     );
     expect(
-      PP.print(
-        Parser.parse(
-          Parser.float.call(Parser)
-        )(List.fromString("1.1"))
-      )
+      Pair.left(
+        List.head(
+          Parser.parse(
+            Parser.float(Parser)
+          )(List.fromString("1.1"))
+        ))
     ).to.eql(
-      '[(1.1,[]),nil]'
+      1.1
+      // '[(1.1,[]),nil]'
     );
     expect(
-      PP.print(
-        Parser.parse(
-          Parser.float.call(Parser)
-        )(List.fromString("-1.1"))
-      )
+      Pair.left(
+        List.head(
+          Parser.parse(
+            Parser.float(Parser)
+          )(List.fromString("-1.1"))
+        ))
     ).to.eql(
-      '[(-1.1,[]),nil]'
+      -1.1
+      // '[(-1.1,[]),nil]'
     );
     next();
   });
   describe("トークン", (next) => {
     it("identifier", (next) => {
       expect(
-        PP.print(
-          Parser.parse(
-            Parser.identifier()
-          )(List.fromString("   abc"))
-        )
+        Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.identifier()
+            )(List.fromString("   abc"))
+          )).toString()
       ).to.eql(
-        '[(Symbol(abc),[]),nil]'
+       'Symbol(abc)'
+        // '[(Symbol(abc),[]),nil]'
       );
       next();
     });
     it("natural", (next) => {
       expect(
-        PP.print(
-          Parser.parse(
-            Parser.natural()
-          )(List.fromString("   123   "))
-        )
+        Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.natural()
+            )(List.fromString("   123   "))
+          ))
       ).to.eql(
-        '[(123,[]),nil]'
+        123
+        // '[(123,[]),nil]'
       );
       next();
     });
     it("integer", (next) => {
       expect(
-        PP.print(
+        Pair.left(
+          List.head(
           Parser.parse(
             Parser.integer()
           )(List.fromString("   -123   "))
-        )
+        ))
       ).to.eql(
-        '[(-123,[]),nil]'
+        -123
+        // '[(-123,[]),nil]'
       );
       next();
     });
@@ -429,13 +492,15 @@ describe('パーサーコンビネーター', () => {
     });
     it("symbol", (next) => {
       expect(
-        PP.print(
-          Parser.parse(
-            Parser.symbol(List.fromString("+"))
-          )(List.fromString("  +  "))
-        )
+        Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.symbol(List.fromString("+"))
+            )(List.fromString("  +  "))
+          ))
       ).to.eql(
-        '[(+,[]),nil]'
+        '+'
+        // '[(+,[]),nil]'
       );
       next();
     });

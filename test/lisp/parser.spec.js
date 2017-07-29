@@ -2,12 +2,8 @@
 
 const expect = require('expect.js'),
  Pair = require('kansuu.js').pair,
- List = require('kansuu.js').monad.list;
-// var List = require('../../lib/lisp/list.js');
-// var Pair = require('../../lib/lisp/pair.js');
-// var Data = require('../../lib/lisp/data.js');
-// var PP = require('../../lib/lisp/pprinter.js');
-var Parser = require('../../lib/lisp/parser.js');
+ List = require('kansuu.js').monad.list,
+ Parser = require('../../lib/lisp/parser.js');
 
 describe('パーサーコンビネーター', () => {
   var abc = List.fromString("abc");

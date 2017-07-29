@@ -4,7 +4,6 @@ const expect = require('expect.js'),
   exp = require('../../lib/lisp/exp.js'),
   env = require('../../lib/lisp/env.js'),
   ID = require('kansuu.js').monad.identity;
- // ID = require('../../lib/lisp/monad.js').ID;
 const evaluate = require('../../lib/lisp/semantics.js');
 
 describe('式の評価', () => {

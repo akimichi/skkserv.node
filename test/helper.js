@@ -3,8 +3,11 @@
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 const env = process.env.NODE_ENV || 'test',
-  config = require('../lib/config.js')(env);
-  
+  config = require('../lib/config.js')(env),
+  uri = config.db.mongo.uri;
+
+console.log(config)
+
 before((done) => {
 
   let clearDB = () =>  {
@@ -16,11 +19,11 @@ before((done) => {
   }
 
   if (mongoose.connection.readyState === 0) {
+    // const options = { promiseLibrary: require('bluebird') };
     const options = { 
       useMongoClient: true,
       promiseLibrary: require('bluebird') 
     };
-    const uri = config.db.mongo.uri;
     mongoose.connect(uri, options, (err) => {
       if (err) {
         throw err;

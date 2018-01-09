@@ -1,9 +1,13 @@
 'use strict';
 
+process.env.NODE_ENV = 'test';
+const mongoose = require('mongoose');
+// mongoose.Promise = require('bluebird');
+
 const expect = require('expect.js'),
-  should = require('should'),
-  mongoose = require('mongoose'),
-  Entry = require('../models/entry.js');
+  should = require('should');
+
+const Entry = require('../models/entry.js');
 
 const factories = require("./factories.js"),
   entries = factories.entries();
@@ -13,17 +17,18 @@ const helper = require('./helper.js');
 describe('Entry model', () => {
   const entry = entries.tatsukawa;
 
-  before(done => {
-    entry.remove()
-      .then(() => {
-        done(); 
-      })
-      .catch((error) => {
-        done(error);  
-      });
-  });
+  // before(done => {
+  //   entry.remove()
+  //     .then(() => {
+  //       done(); 
+  //     })
+  //     .catch((error) => {
+  //       done(error);  
+  //     });
+  // });
 
   it('should be able to save without errors', (done) => {
+    this.timeout('15s');
     entry.save((err, document) => {
       should.not.exist(err);
       expect(document.yomi).to.equal("たつかわ")

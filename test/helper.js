@@ -8,18 +8,17 @@ const env = process.env.NODE_ENV || 'test',
 
 console.log(config)
 
-before((done) => {
-
-  let clearDB = () =>  {
+before(function (done) {
+  this.timeout('15s');
+  const clearDB = () =>  {
     for (var i in mongoose.connection.collections) {
       mongoose.connection.collections[i].remove(() => {
       });
     }
-    return done();
+    // return done();
   }
 
   if (mongoose.connection.readyState === 0) {
-    // const options = { promiseLibrary: require('bluebird') };
     const options = { 
       useMongoClient: true,
       promiseLibrary: require('bluebird') 
@@ -33,6 +32,7 @@ before((done) => {
   } else {
     return clearDB();
   }
+  done();
 });
 
 

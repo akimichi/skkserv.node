@@ -2,7 +2,7 @@
 
 process.env.NODE_ENV = 'test';
 const mongoose = require('mongoose');
-// mongoose.Promise = require('bluebird');
+mongoose.Promise = require('bluebird');
 
 const expect = require('expect.js'),
   should = require('should');
@@ -25,31 +25,38 @@ describe('Entry model', () => {
   //     .catch((error) => {
   //       done(error);  
   //     });
+  //     done();
   // });
 
-  it('should be able to save without errors', (done) => {
+  it('should be able to save without errors', function (done) {
     this.timeout('15s');
-    entry.save((err, document) => {
-      should.not.exist(err);
-      expect(document.yomi).to.equal("たつかわ")
-      done();
-    });
-  });
-  describe('Entry#henkan', () => {
-    it('should be able to henkan', (done) => {
-      const ai = new Entry({
-        yomi: 'あい',
-        candidates: ["愛","藍","相"]
-      });
-      ai.save((err, document) => {
+    entry.save()
+      .then(document => {
         should.not.exist(err);
-        Entry.henkan('あい', (err, response) => {
-          expect(response).to.equal(
-            '1/愛/藍/相/\n'
-          )
-          done();
-        });
-      });
-    });
+        expect(document.yomi).to.equal("たつかわ")
+      })
+    done();
+    // entry.save((err, document) => {
+    //   should.not.exist(err);
+    //   expect(document.yomi).to.equal("たつかわ")
+    //   done();
+    // });
   });
+  // describe('Entry#henkan', () => {
+  //   it('should be able to henkan', (done) => {
+  //     const ai = new Entry({
+  //       yomi: 'あい',
+  //       candidates: ["愛","藍","相"]
+  //     });
+  //     ai.save((err, document) => {
+  //       should.not.exist(err);
+  //       Entry.henkan('あい', (err, response) => {
+  //         expect(response).to.equal(
+  //           '1/愛/藍/相/\n'
+  //         )
+  //         done();
+  //       });
+  //     });
+  //   });
+  // });
 });

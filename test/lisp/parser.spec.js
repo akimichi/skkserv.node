@@ -267,12 +267,13 @@ describe('パーサーコンビネーター', () => {
   });
   it("space", (next) => {
     expect(
-      Pair.left(
+      // List.toArray(
         List.head(
           Parser.parse(
             Parser.space()
           )(List.fromString("   abc"))
-        ))
+        )
+        // )
     ).to.eql(
       undefined
       // '[((),[a,b,c,nil]),nil]'

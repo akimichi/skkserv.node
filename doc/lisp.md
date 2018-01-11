@@ -1,0 +1,21 @@
+
+## AST
+
+~~~
+num { type: "num", value: NUMBER }
+str { type: "str", value: STRING }
+bool { type: "bool", value: true or false }
+var { type: "var", value: NAME }
+lambda { type: "lambda", vars: [ NAME... ], body: AST }
+call { type: "call", func: AST, args: [ AST... ] }
+if { type: "if", cond: AST, then: AST, else: AST }
+assign { type: "assign", operator: "=", left: AST, right: AST }
+binary { type: "binary", operator: OPERATOR, left: AST, right: AST }
+prog { type: "prog", prog: [ AST... ] }
+let { type: "let", vars: [ VARS... ], body: AST }
+~~~
+
+
+# 資料
+
+* http://lisperator.net/pltut/parser/the-ast

@@ -24,7 +24,9 @@
     "bluebird": "3.5.1",
     "iconv-lite": "0.4.18",
     "kansuu.js": "0.2.17",
+    "mocha": "3.4.2",
     "mongodb": "2.2.30",
-    "mongoose": "4.11.1"
+    "mongoose": "4.11.1",
+    "should": "11.2.1"
   }
 }

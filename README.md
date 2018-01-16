@@ -1,7 +1,16 @@
 skkserv.node
 ============
 
-# production 
+
+## test
+
+
+~~~
+$ nvm use
+$ npm test
+~~~
+
+## production 
 
 ~~~
 $ npm run seed
@@ -9,8 +18,7 @@ $ npm run start-server
 ~~~
 
 
-
-# seed
+## seed
 
 ~~~
 $ NODE_DEV=development node bin/seed.js

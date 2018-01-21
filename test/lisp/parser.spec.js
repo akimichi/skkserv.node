@@ -394,7 +394,8 @@ describe('パーサーコンビネーター', () => {
       );
       next();
     });
-    it("numeric", (next) => {
+    it("numeric", function(next) {
+      this.timeout('5s')
       expect(
         Pair.left(
           List.head(

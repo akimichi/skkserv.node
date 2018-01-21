@@ -24,6 +24,37 @@ describe('パーサーコンビネーター', () => {
       // );
       next();
     });
+    it("result", (next) => {
+      expect(
+          List.toArray(
+            List.head(
+              Parser.parse(Parser.result(1))(abc)
+            ))
+          ).to.eql(
+            ['1', 'a','b','c']
+            );
+      next();
+    });
+    it("empty", (next) => {
+      var input = List.fromString("abc");
+      expect(
+          List.toArray(
+            Parser.parse(Parser.empty)(input)
+            )
+          ).to.eql(
+            []
+            );
+      next();
+    });
+    it("zero", (next) => {
+      var input = List.fromString("abc");
+      expect(
+          List.toArray(Parser.parse(Parser.zero)(input))
+          ).to.eql(
+            []
+            );
+      next();
+    });
     describe("fmap", (next) => {
       it("toUpper", (next) => {
         var input = List.fromString("abc");
@@ -79,8 +110,9 @@ describe('パーサーコンビネーター', () => {
             // '[(+,[]),nil]'
             );
           next();
-     });
-   }); // Parserモナド
+          });
+      }); 
+    });// Parserモナド
     describe("parse", (next) => {
       it("item", (next) => {
         expect(
@@ -105,20 +137,6 @@ describe('パーサーコンビネーター', () => {
         // );
         next();
       });
-      it("empty", (next) => {
-        var input = List.fromString("abc");
-        expect(
-            // PP.print(
-            List.toArray(
-              Parser.parse(Parser.empty)(input)
-              )
-            ).to.eql(
-              []
-              // '[]'
-              );
-            next();
-            });
-        });
       describe("alternative", (next) => {
         it("alt", (next) => {
           var input = List.fromString("abc");

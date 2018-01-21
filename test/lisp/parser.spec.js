@@ -46,8 +46,8 @@ describe('パーサーコンビネーター', () => {
             );
       next();
     });
-    it("zero", (next) => {
-      var input = List.fromString("abc");
+    it("zeroは常にパースを失敗させる", (next) => {
+      const input = List.fromString("abc");
       expect(
           List.toArray(Parser.parse(Parser.zero)(input))
           ).to.eql(
@@ -114,7 +114,7 @@ describe('パーサーコンビネーター', () => {
       }); 
     });// Parserモナド
     describe("parse", (next) => {
-      it("item", (next) => {
+      it("itemは最初の一文字だけをパースする", (next) => {
         expect(
             List.isEmpty(
               Parser.item(List.empty())
@@ -123,13 +123,19 @@ describe('パーサーコンビネーター', () => {
             ).to.eql(
               []
               );
-        expect(
-            List.toArray(
-              List.head(
-                Parser.item(List.fromString("abc"))))
-            ).to.eql(
+        Pair.left(
+            List.head(
+              Parser.parse(Parser.item)(List.fromString("abc")))).to.eql(
               ['a','b','c']
               );
+
+        // expect(
+        //     List.toArray(
+        //       List.head(
+        //         Parser.item(List.fromString("abc"))))
+        //     ).to.eql(
+        //       ['a','b','c']
+        //       );
         // expect(
         //   PP.print(Parser.item(List.fromString("abc")))
         // ).to.eql(

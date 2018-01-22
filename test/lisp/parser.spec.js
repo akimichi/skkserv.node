@@ -341,7 +341,7 @@ describe('パーサーコンビネーター', () => {
         Pair.left(
           List.head(
             Parser.parse(
-              Parser.ident()
+              Parser.ident
             )(List.fromString("abc def"))
           ))
       ).to.eql(
@@ -356,11 +356,83 @@ describe('パーサーコンビネーター', () => {
         Pair.left(
           List.head(
             Parser.parse(
-              Parser.nat()
+              Parser.nat
             )(List.fromString("123"))
           ))
       ).to.eql(
         123
+      );
+      next();
+    });
+    it("int", (next) => {
+      expect(
+        Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.int
+            )(List.fromString("-123 abc"))
+          ))
+      ).to.eql(
+        -123
+        // '[(-123,[a,b,c,nil]),nil]'
+      );
+      expect(
+        Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.int
+            )(List.fromString("123 abc"))
+          ))
+      ).to.eql(
+        123
+      );
+      next();
+    });
+    it("float", function(next) {
+      this.timeout('5s')
+      expect(
+        Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.float
+            )(List.fromString("0.1"))
+          ))
+      ).to.eql(
+        0.1
+        // '[(0.1,[]),nil]'
+      );
+      expect(
+        Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.float
+            )(List.fromString("0.123"))
+          ))
+      ).to.eql(
+        0.123
+        // '[(0.123,[]),nil]'
+      );
+      expect(
+        Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.float
+            )(List.fromString("1.1"))
+          ))
+      ).to.eql(
+        1.1
+        // '[(1.1,[]),nil]'
+      );
+      expect(
+        Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.float
+            )(List.fromString("-1.1"))
+          ))
+      ).to.eql(
+        -1.1
+        // '[(-1.1,[]),nil]'
       );
       next();
     });
@@ -376,78 +448,6 @@ describe('パーサーコンビネーター', () => {
       ).to.eql(
         undefined
         // '[((),[a,b,c,nil]),nil]'
-      );
-      next();
-    });
-    it("int", (next) => {
-      expect(
-        Pair.left(
-          List.head(
-            Parser.parse(
-              Parser.int(Parser)
-            )(List.fromString("-123 abc"))
-          ))
-      ).to.eql(
-        -123
-        // '[(-123,[a,b,c,nil]),nil]'
-      );
-      expect(
-        Pair.left(
-          List.head(
-            Parser.parse(
-              Parser.int(Parser)
-            )(List.fromString("123 abc"))
-          ))
-      ).to.eql(
-        123
-      );
-      next();
-    });
-    it("float", function(next) {
-      this.timeout('5s')
-      expect(
-        Pair.left(
-          List.head(
-            Parser.parse(
-              Parser.float(Parser)
-            )(List.fromString("0.1"))
-          ))
-      ).to.eql(
-        0.1
-        // '[(0.1,[]),nil]'
-      );
-      expect(
-        Pair.left(
-          List.head(
-            Parser.parse(
-              Parser.float(Parser)
-            )(List.fromString("0.123"))
-          ))
-      ).to.eql(
-        0.123
-        // '[(0.123,[]),nil]'
-      );
-      expect(
-        Pair.left(
-          List.head(
-            Parser.parse(
-              Parser.float(Parser)
-            )(List.fromString("1.1"))
-          ))
-      ).to.eql(
-        1.1
-        // '[(1.1,[]),nil]'
-      );
-      expect(
-        Pair.left(
-          List.head(
-            Parser.parse(
-              Parser.float(Parser)
-            )(List.fromString("-1.1"))
-          ))
-      ).to.eql(
-        -1.1
-        // '[(-1.1,[]),nil]'
       );
       next();
     });

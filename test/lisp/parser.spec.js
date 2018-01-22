@@ -188,33 +188,96 @@ describe('パーサーコンビネーター', () => {
       });
     });
     describe("派生したパーサー", (next) => {
-      it("digit", (next) => {
+      it("lower", (next) => {
         expect(
-          List.toArray(
+          Pair.left(
             List.head(
               Parser.parse(
-                Parser.digit()
+                Parser.lower
+              )(List.fromString("abc"))
+            ))
+        ).to.eql(
+          'a' //   '[(1,[2,3,nil]),nil]'
+        );
+        expect(
+          List.toArray(Pair.right(
+            List.head(
+              Parser.parse(
+                Parser.lower
+              )(List.fromString("abc"))
+            )))
+        ).to.eql(
+          ['b','c'] //   '[(1,[2,3,nil]),nil]'
+        );
+        next();
+      });
+      it("digit", (next) => {
+        expect(
+          Pair.left(
+            List.head(
+              Parser.parse(
+                Parser.digit
               )(List.fromString("123"))
             ))
         ).to.eql(
-          ['1','2','3']
-          //   '[(1,[2,3,nil]),nil]'
+          '1' //   '[(1,[2,3,nil]),nil]'
+        );
+        expect(
+          List.toArray(Pair.right(
+            List.head(
+              Parser.parse(
+                Parser.digit
+              )(List.fromString("123"))
+            )))
+        ).to.eql(
+          ['2','3'] //   '[(1,[2,3,nil]),nil]'
+        );
+        next();
+      });
+      it("letter", (next) => {
+        expect(
+          Pair.left(
+            List.head(
+              Parser.parse(
+                Parser.letter
+              )(List.fromString("abc123"))
+            ))
+        ).to.eql(
+          ['a']
+        );
+        expect(
+          List.toArray(Pair.right(
+            List.head(
+              Parser.parse(
+                Parser.letter
+              )(List.fromString("abc123"))
+            )))
+        ).to.eql(
+          ['b','c','1','2','3']
         );
         next();
       });
       it("alphanum", (next) => {
         expect(
-          List.toArray(
+          Pair.left(
             List.head(
               Parser.parse(
-                Parser.alphanum()
+                Parser.alphanum
               )(List.fromString("123"))
             ))
         ).to.eql(
-          ['1','2','3']
-          // '[(1,[2,3,nil]),nil]'
+          ['1']
         );
-
+        expect(
+          List.toArray(Pair.right(
+            List.head(
+              Parser.parse(
+                Parser.alphanum
+              )(List.fromString("123"))
+            )))
+        ).to.eql(
+          ['2','3']
+        );
         next();
       });
       it("chars", (next) => {
@@ -280,23 +343,24 @@ describe('パーサーコンビネーター', () => {
             Parser.parse(
               Parser.ident()
             )(List.fromString("abc def"))
-          )).toString()
+          ))
       ).to.eql(
-        'Symbol(abc)'
+        'abc'
+        // 'Symbol(abc)'
         // '[(Symbol(abc),[ ,d,e,f,nil]),nil]'
       );
       next();
     });
     it("nat", (next) => {
       expect(
-        List.toArray(
+        Pair.left(
           List.head(
             Parser.parse(
               Parser.nat()
             )(List.fromString("123"))
           ))
       ).to.eql(
-        [123]
+        123
       );
       next();
     });

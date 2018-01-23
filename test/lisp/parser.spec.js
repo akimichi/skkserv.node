@@ -383,6 +383,26 @@ describe('パーサーコンビネーター', () => {
         );
         next();
       });
+      it("bracket", (next) => {
+        const open = Parser.char("["),
+          close = Parser.char("]"),
+          comma = Parser.char(",");
+        const ints = (input) => {
+          return Parser.bracket(open, Parser.sepby1(Parser.int)(comma), close)(input);
+        };
+        expect(
+          List.toArray(
+            Pair.left(
+              List.head(
+                Parser.parse(
+                  ints 
+                )(List.fromString("[1,2,3]"))
+              )))
+        ).to.eql(
+          [1,2,3]
+        );
+        next();
+      });
     });
     it("ident", (next) => {
       expect(

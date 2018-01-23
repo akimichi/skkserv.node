@@ -260,6 +260,19 @@ describe('パーサーコンビネーター', () => {
         );
         next();
       });
+      it("char", (next) => {
+        expect(
+          Pair.left(
+            List.head(
+              Parser.parse(
+                Parser.char("a")
+              )(List.fromString("abcdef"))
+            ))
+        ).to.eql(
+          'a'
+        );
+        next();
+      });
       it("chars", (next) => {
         expect(
           List.toArray(
@@ -304,7 +317,7 @@ describe('パーサーコンビネーター', () => {
         next();
       });
     });
-    describe("manyパーサ", (next) => {
+    describe("反復パーサ", (next) => {
       it("many digit", (next) => {
         expect(
           List.toArray(
@@ -341,6 +354,32 @@ describe('パーサーコンビネーター', () => {
           )
         ).to.eql(
           []
+        );
+        next();
+      });
+      it("sepby1", (next) => {
+        const open = Parser.char("["),
+          close = Parser.char("]"),
+          comma = Parser.char(",");
+        const ints = (input) => {
+          return Parser.flatMap(open)(_ => {
+            return Parser.flatMap(Parser.sepby1(Parser.int)(comma))(ns => {
+              return Parser.flatMap(close)(_ => {
+                return Parser.pure(ns);
+              });
+            });
+          })(input);
+        };
+        expect(
+          List.toArray(
+            Pair.left(
+              List.head(
+                Parser.parse(
+                  ints 
+                )(List.fromString("[1,2,3]"))
+              )))
+        ).to.eql(
+          [1,2,3]
         );
         next();
       });

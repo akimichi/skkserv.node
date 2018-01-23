@@ -383,6 +383,32 @@ describe('パーサーコンビネーター', () => {
         );
         next();
       });
+      it("sepby", (next) => {
+        const open = Parser.char("["),
+          close = Parser.char("]"),
+          comma = Parser.char(",");
+        const ints = (input) => {
+          return Parser.flatMap(open)(_ => {
+            return Parser.flatMap(Parser.sepby(Parser.int)(comma))(ns => {
+              return Parser.flatMap(close)(_ => {
+                return Parser.pure(ns);
+              });
+            });
+          })(input);
+        };
+        expect(
+          List.toArray(
+            Pair.left(
+              List.head(
+                Parser.parse(
+                  ints 
+                )(List.fromString("[]"))
+              )))
+        ).to.eql(
+          []
+        );
+        next();
+      });
       it("bracket", (next) => {
         const open = Parser.char("["),
           close = Parser.char("]"),

@@ -89,25 +89,25 @@ describe('パーサーコンビネーター', () => {
       });
     });
     describe("flatMap", (next) => {
-      it("flatMapの単純な使用", (next) => {
-        var input = List.fromString("  +  ");
-        var add_or_subtract = Parser.alt(Parser.symbol(List.fromString("+")), Parser.symbol(List.fromString("-")));
-        var parser = Parser.flatMap(add_or_subtract)((operator) => {
-          return Parser.pure(operator);
-        });
-        expect(
-          // PP.print(
-          List.toArray(
-            List.head(
-              Parser.parse(parser)(input)
-            )
-          )
-        ).to.eql(
-          ['+']
-          // '[(+,[]),nil]'
-        );
-        next();
-      });
+      // it("flatMapの単純な使用", (next) => {
+      //   var input = List.fromString("  +  ");
+      //   var add_or_subtract = Parser.alt(Parser.symbol(List.fromString("+")), Parser.symbol(List.fromString("-")));
+      //   var parser = Parser.flatMap(add_or_subtract)((operator) => {
+      //     return Parser.pure(operator);
+      //   });
+      //   expect(
+      //     // PP.print(
+      //     List.toArray(
+      //       List.head(
+      //         Parser.parse(parser)(input)
+      //       )
+      //     )
+      //   ).to.eql(
+      //     ['+']
+      //     // '[(+,[]),nil]'
+      //   );
+      //   next();
+      // });
       it("flatMapを組み合わせる", (next) => {
         var input = List.fromString("abcdef");
         var three = Parser.flatMap(Parser.item)((x) => {
@@ -158,35 +158,6 @@ describe('パーサーコンビネーター', () => {
       );
       next();
     });
-    describe("alternative", (next) => {
-      it("alt", (next) => {
-        var input = List.fromString("abc");
-        expect(
-          // PP.print(
-          List.toArray(
-            List.head(
-              Parser.parse(
-                Parser.alt(Parser.item, Parser.pure("d"))
-              )(input)
-            ))
-        ).to.eql(
-          ['a','b','c']
-          // '[(a,[b,c,nil]),nil]'
-        );
-        expect(
-          List.toArray(
-            List.head(
-              Parser.parse(
-                Parser.alt(Parser.empty, Parser.pure("d"))
-              )(input)
-            ))
-        ).to.eql(
-          ['d','a','b','c']
-          // '[(d,[a,b,c,nil]),nil]'
-        );
-        next();
-      });
-    });
     describe("派生したパーサー", (next) => {
       it("lower", (next) => {
         expect(
@@ -231,6 +202,15 @@ describe('パーサーコンビネーター', () => {
             )))
         ).to.eql(
           ['2','3'] //   '[(1,[2,3,nil]),nil]'
+        );
+        expect(
+          List.head(
+            Parser.parse(
+              Parser.digit
+            )(List.fromString(" "))
+          )
+        ).to.eql(
+          '1' //   '[(1,[2,3,nil]),nil]'
         );
         next();
       });
@@ -291,6 +271,35 @@ describe('パーサーコンビネーター', () => {
         ).to.eql(
           ['abc','d','e','f']
           // '[(abc,[d,e,f,nil]),nil]'
+        );
+        next();
+      });
+    });
+    describe("alternative", (next) => {
+      it("alt", (next) => {
+        var input = List.fromString("abc");
+        expect(
+          // PP.print(
+          List.toArray(
+            List.head(
+              Parser.parse(
+                Parser.alt(Parser.item, Parser.pure("d"))
+              )(input)
+            ))
+        ).to.eql(
+          ['a','b','c']
+          // '[(a,[b,c,nil]),nil]'
+        );
+        expect(
+          List.toArray(
+            List.head(
+              Parser.parse(
+                Parser.alt(Parser.empty, Parser.pure("d"))
+              )(input)
+            ))
+        ).to.eql(
+          ['d','a','b','c']
+          // '[(d,[a,b,c,nil]),nil]'
         );
         next();
       });

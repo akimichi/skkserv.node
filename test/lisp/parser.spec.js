@@ -477,12 +477,11 @@ describe('パーサーコンビネーター', () => {
           Pair.left(
             List.head(
               Parser.parse(
-                Parser.natural()
+                Parser.natural
               )(List.fromString("   123   "))
             ))
         ).to.eql(
-          123
-          // '[(123,[]),nil]'
+          123 // '[(123,[]),nil]'
         );
         next();
       });
@@ -491,12 +490,11 @@ describe('パーサーコンビネーター', () => {
           Pair.left(
             List.head(
               Parser.parse(
-                Parser.integer()
+                Parser.integer
               )(List.fromString("   -123   "))
             ))
         ).to.eql(
-          -123
-          // '[(-123,[]),nil]'
+          -123 // '[(-123,[]),nil]'
         );
         next();
       });
@@ -506,7 +504,7 @@ describe('パーサーコンビネーター', () => {
           Pair.left(
             List.head(
               Parser.parse(
-                Parser.numeric()
+                Parser.numeric
               )(List.fromString("   -123   "))
             )
           )({
@@ -521,7 +519,7 @@ describe('パーサーコンビネーター', () => {
           Pair.left(
             List.head(
               Parser.parse(
-                Parser.numeric()
+                Parser.numeric
               )(List.fromString("   0.123   "))
             )
           )({
@@ -557,7 +555,7 @@ describe('パーサーコンビネーター', () => {
           Pair.left(
             List.head(
               Parser.parse(
-                Parser.boolean()
+                Parser.boolean
               )(List.fromString("  #t  "))
             )
           )({
@@ -572,7 +570,7 @@ describe('パーサーコンビネーター', () => {
           Pair.left(
             List.head(
               Parser.parse(
-                Parser.boolean()
+                Parser.boolean
               )(List.fromString("#f  "))
             )
           )({
@@ -613,7 +611,7 @@ describe('パーサーコンビネーター', () => {
           Pair.left(
             List.head(
               Parser.parse(
-                Parser.string()
+                Parser.string
               )(List.fromString("\"abc\""))
             )
           )({

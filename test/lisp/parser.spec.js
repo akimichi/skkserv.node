@@ -203,15 +203,15 @@ describe('パーサーコンビネーター', () => {
         ).to.eql(
           ['2','3'] //   '[(1,[2,3,nil]),nil]'
         );
-        expect(
-          List.head(
-            Parser.parse(
-              Parser.digit
-            )(List.fromString(" "))
-          )
-        ).to.eql(
-          '1' //   '[(1,[2,3,nil]),nil]'
-        );
+        // expect(
+        //   List.head(
+        //     Parser.parse(
+        //       Parser.digit
+        //     )(List.fromString(" "))
+        //   )
+        // ).to.eql(
+        //   '1' //   '[(1,[2,3,nil]),nil]'
+        // );
         next();
       });
       it("letter", (next) => {
@@ -311,7 +311,7 @@ describe('パーサーコンビネーター', () => {
             Pair.left(
               List.head(
                 Parser.parse(
-                  Parser.many(Parser.digit())
+                  Parser.many(Parser.digit)
                 )(List.fromString("123abc"))
               )))
         ).to.eql(
@@ -323,7 +323,7 @@ describe('パーサーコンビネーター', () => {
             Pair.left(
               List.head(
                 Parser.parse(
-                  Parser.many(Parser.digit())
+                  Parser.many(Parser.digit)
                 )(List.fromString("abc"))
               )))
         ).to.eql(
@@ -336,7 +336,7 @@ describe('パーサーコンビネーター', () => {
         expect(
           List.toArray(
             Parser.parse(
-              Parser.some(Parser.digit())
+              Parser.some(Parser.digit)
             )(List.fromString("abc"))
           )
         ).to.eql(
@@ -445,18 +445,16 @@ describe('パーサーコンビネーター', () => {
       );
       next();
     });
-    it("space", (next) => {
+    it("spaces", (next) => {
       expect(
-        // List.toArray(
-        List.head(
-          Parser.parse(
-            Parser.space()
-          )(List.fromString("   abc"))
-        )
-        // )
+        List.toArray(Pair.right(
+          List.head(
+            Parser.parse(
+              Parser.spaces
+            )(List.fromString("   abc"))
+          )))
       ).to.eql(
-        undefined
-        // '[((),[a,b,c,nil]),nil]'
+        ['a','b','c'] 
       );
       next();
     });
@@ -466,12 +464,11 @@ describe('パーサーコンビネーター', () => {
           Pair.left(
             List.head(
               Parser.parse(
-                Parser.identifier()
+                Parser.identifier
               )(List.fromString("   abc"))
             )).toString()
         ).to.eql(
-          'Symbol(abc)'
-          // '[(Symbol(abc),[]),nil]'
+          'abc' // '[(Symbol(abc),[]),nil]'
         );
         next();
       });

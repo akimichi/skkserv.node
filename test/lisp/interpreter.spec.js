@@ -7,25 +7,25 @@ const expect = require('expect.js'),
   List = require('kansuu.js').monad.list,
   Parser = require('../../lib/lisp/parser.js');
 
-const Env = require('../../lib/lisp/interpreter.js').env,
-  Exp = require('../../lib/lisp/interpreter.js').exp,
-  // Parser = require('../../lib/lisp/interpret.js').parser,
-  Evalator = require('../../lib/lisp/interpreter.js').evaluator;
+// const Env = require('../../lib/lisp/interpreter.js').env,
+//   Exp = require('../../lib/lisp/interpreter.js').exp,
+//   // Parser = require('../../lib/lisp/interpret.js').parser,
+//   Evalator = require('../../lib/lisp/interpreter.js').evaluator;
 
-describe('インタープリター', () => {
-  it('数値の評価のテスト', (next) => {
-    const numericParser = Parser.numeric();
-    Either.match(Evalator(numericParser)("123")(env.empty), {
-      left: (value) => {
-        expect().fail();
-      },
-      right: (value) => {
-        expect(value).to.eql(123)
-      }
-    });
-    next();
-  });
-});
+// describe('インタープリター', () => {
+//   it('数値の評価のテスト', (next) => {
+//     const numericParser = Parser.numeric;
+//     Either.match(Evalator(numericParser)("123")(env.empty), {
+//       left: (value) => {
+//         expect().fail();
+//       },
+//       right: (value) => {
+//         expect(value).to.eql(123)
+//       }
+//     });
+//     next();
+//   });
+// });
 
 // const interpret = require('../../lib/lisp/interpreter.js');
 

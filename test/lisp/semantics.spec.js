@@ -32,6 +32,9 @@ describe('式の評価', () => {
     );
     next();
   });
+  describe('変数評価のテスト', () => {
+    const initEnv = env.empty;
+  });
   describe('ブール演算のテスト', () => {
     it('andのテスト', (next) => {
       expect(

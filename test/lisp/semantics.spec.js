@@ -1,8 +1,8 @@
 'use strict';
 
 const expect = require('expect.js'),
-  exp = require('../../lib/lisp/exp.js'),
-  env = require('../../lib/lisp/env.js'),
+  Exp = require('../../lib/lisp/exp.js'),
+  Env = require('../../lib/lisp/env.js'),
   ID = require('kansuu.js').monad.identity;
 const evaluate = require('../../lib/lisp/semantics.js');
 
@@ -10,7 +10,7 @@ describe('式の評価', () => {
 
   it('数値の評価のテスト', (next) => {
     expect(
-      evaluate(exp.num(2), env.empty)
+      evaluate(Exp.num(2), Env.empty)
     ).to.eql(
       ID.unit(2)
     );
@@ -18,7 +18,7 @@ describe('式の評価', () => {
   });
   it('ブール値の評価のテスト', (next) => {
     expect(
-      evaluate(exp.bool(true), env.empty)
+      evaluate(Exp.bool(true), Env.empty)
     ).to.eql(
       ID.unit(true)
     );
@@ -26,21 +26,40 @@ describe('式の評価', () => {
   });
   it('文字列の評価のテスト', (next) => {
     expect(
-      evaluate(exp.string("これは文字列です"), env.empty)
+      evaluate(Exp.string("これは文字列です"), Env.empty)
     ).to.eql(
       ID.unit("これは文字列です")
     );
     next();
   });
   describe('変数評価のテスト', () => {
-    const initEnv = env.empty;
+    it('環境から変数の値を取り出すテスト', (next) => {
+      const emptyEnv = Env.empty,
+        initEnv = Env.extend('a', 1, emptyEnv);
+      expect(
+        evaluate(Exp.variable("a"), initEnv)
+      ).to.eql(
+        ID.unit(1)
+      );
+      next();
+    });
+    it('存在しない変数は、評価されると undefined となる', (next) => {
+      const emptyEnv = Env.empty,
+        initEnv = Env.extend('a', 1, emptyEnv);
+      expect(
+        evaluate(Exp.variable("b"), initEnv)
+      ).to.eql(
+        ID.unit(undefined)
+      );
+      next();
+    });
   });
   describe('ブール演算のテスト', () => {
     it('andのテスト', (next) => {
       expect(
-        evaluate(exp.and(
-          exp.bool(true),exp.bool(true)
-        ), env.empty)
+        evaluate(Exp.and(
+          Exp.bool(true),Exp.bool(true)
+        ), Env.empty)
       ).to.eql(
         ID.unit(true)
       );
@@ -48,9 +67,9 @@ describe('式の評価', () => {
     });
     it('orのテスト', (next) => {
       expect(
-        evaluate(exp.or(
-          exp.bool(false),exp.bool(false)
-        ), env.empty)
+        evaluate(Exp.or(
+          Exp.bool(false),Exp.bool(false)
+        ), Env.empty)
       ).to.eql(
         ID.unit(false)
       );
@@ -60,44 +79,58 @@ describe('式の評価', () => {
   describe('数値演算のテスト', () => {
     it('addのテスト', (next) => {
       expect(
-        evaluate(exp.add(
-            exp.num(0),exp.num(1)
-        ), env.empty)
+        evaluate(Exp.add(
+            Exp.num(0),Exp.num(1)
+        ), Env.empty)
       ).to.eql(
         ID.unit(1)
       );
       next();
     });
   });
-  // it('if式の評価のテスト', (next) => {
-  //   expect(
-  //     evaluate(exp.if(exp.bool(true), exp.num(1), exp.num(0)),
-  //         env.empty)
-  //   ).to.eql(
-  //     ID.unit(1)
-  //   );
-  //   expect(
-  //     evaluate(exp.if(exp.bool(false), exp.num(1), exp.num(0)),
-  //         env.empty)
-  //   ).to.eql(
-  //     ID.unit(0)
-  //   );
-  //   expect(
-  //     evaluate(
-  //       exp.if(exp.isEqual(exp.bool(false),exp.bool(false)), 
-  //         exp.num(1), exp.num(0)),
-  //       env.empty)
-  //   ).to.eql(
-  //     ID.unit(1)
-  //   );
-  //   expect(
-  //     evaluate(
-  //       exp.if(exp.isEqual(exp.bool(true),exp.bool(false)), 
-  //         exp.num(1), exp.num(0)),
-  //       env.empty)
-  //   ).to.eql(
-  //     ID.unit(0)
-  //   );
-  //   next();
-  // });
+  describe('関数適用のテスト', () => {
+    it('id(1)のテスト', (next) => {
+      const x = Exp.variable("x"),
+        id = Exp.lambda(x, x);
+      expect(
+        evaluate(Exp.app(
+          id, Exp.num(1)
+        ), Env.empty)
+      ).to.eql(
+        ID.unit(1)
+      );
+      next();
+    });
+  });
+  it('if式の評価のテスト', (next) => {
+    expect(
+      evaluate(Exp.conditional(Exp.bool(true), Exp.num(1), Exp.num(0)),
+          Env.empty)
+    ).to.eql(
+      ID.unit(1)
+    );
+    expect(
+      evaluate(Exp.conditional(Exp.bool(false), Exp.num(1), Exp.num(0)),
+          Env.empty)
+    ).to.eql(
+      ID.unit(0)
+    );
+    expect(
+      evaluate(
+        Exp.conditional(Exp.isEqual(Exp.bool(false),Exp.bool(false)), 
+          Exp.num(1), Exp.num(0)),
+        Env.empty)
+    ).to.eql(
+      ID.unit(1)
+    );
+    expect(
+      evaluate(
+        Exp.conditional(Exp.isEqual(Exp.bool(true),Exp.bool(false)), 
+          Exp.num(1), Exp.num(0)),
+        Env.empty)
+    ).to.eql(
+      ID.unit(0)
+    );
+    next();
+  });
 });

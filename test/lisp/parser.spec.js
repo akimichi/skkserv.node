@@ -590,13 +590,9 @@ describe('パーサーコンビネーター', () => {
             List.head(
               Parser.parse(
                 Parser.numeric
-              )(List.fromString("   -123   "))
+              )(List.fromString("-123"))
             )
-          )({
-            num: (value) => {
-              return value;
-            }
-          })
+          )
         ).to.eql(
           -123 
         );
@@ -605,13 +601,9 @@ describe('パーサーコンビネーター', () => {
             List.head(
               Parser.parse(
                 Parser.numeric
-              )(List.fromString("   0.123   "))
+              )(List.fromString("0.123"))
             )
-          )({
-            num: (value) => {
-              return value;
-            }
-          })
+          )
         ).to.eql(
           0.123
         );
@@ -643,11 +635,7 @@ describe('パーサーコンビネーター', () => {
                 Parser.boolean
               )(List.fromString("  #t  "))
             )
-          )({
-            bool: (value) => {
-              return value;
-            }
-          })
+          )
         ).to.eql(
           true 
         );
@@ -658,11 +646,7 @@ describe('パーサーコンビネーター', () => {
                 Parser.boolean
               )(List.fromString("#f  "))
             )
-          )({
-            bool: (value) => {
-              return value;
-            }
-          })
+          )
         ).to.eql(
           false 
         );
@@ -686,8 +670,7 @@ describe('パーサーコンビネーター', () => {
               )(List.fromString("  +  "))
             ))
         ).to.eql(
-          '+'
-          // '[(+,[]),nil]'
+          '+' // '[(+,[]),nil]'
         );
         next();
       });
@@ -738,6 +721,20 @@ describe('パーサーコンビネーター', () => {
       });
     });
     describe("S式", (next) => {
+      it("atom", (next) => {
+        expect(
+          Pair.left(
+            List.head(
+              Parser.parse(
+                Parser.atom
+              )(List.fromString("123"))
+            )
+          )
+        ).to.eql(
+          123 
+        );
+        next();
+      });
       // it("sexp", (next) => {
       //   expect(
       //     PP.print(

@@ -634,7 +634,7 @@ describe('パーサーコンビネーター', () => {
           Pair.left(
             List.head(
               Parser.parse(
-                Parser.identifier
+                Parser.identifier(List.unit("define"))
               )(List.fromString("abc   "))
             )).toString()
         ).to.eql(
@@ -710,11 +710,7 @@ describe('パーサーコンビネーター', () => {
                 Parser.string
               )(List.fromString("\"abc\""))
             )
-          )({
-            string: (value) => {
-              return value;
-            }
-          })
+          )
         ).to.eql(
           "abc" 
         );
@@ -760,6 +756,28 @@ describe('パーサーコンビネーター', () => {
           )
         ).to.eql(
           123 
+        );
+        expect(
+          Pair.left(
+            List.head(
+              Parser.parse(
+                Parser.atom
+              )(List.fromString("#t"))
+            )
+          )
+        ).to.eql(
+          true
+        );
+        expect(
+          Pair.left(
+            List.head(
+              Parser.parse(
+                Parser.atom
+              )(List.fromString("\"abc\""))
+            )
+          )
+        ).to.eql(
+          "abc"
         );
         next();
       });

@@ -3,6 +3,7 @@
 const expect = require('expect.js'),
   Pair = require('kansuu.js').pair,
   List = require('kansuu.js').monad.list,
+  Exp = require('../../lib/lisp/exp.js'),
   Parser = require('../../lib/lisp/parser.js');
 
 describe('パーサーコンビネーター', () => {
@@ -640,6 +641,15 @@ describe('パーサーコンビネーター', () => {
         ).to.eql(
           'abc' // '[(Symbol(abc),[]),nil]'
         );
+        expect(
+          List.toArray(
+            Parser.parse(
+              Parser.identifier(List.unit("define"))
+            )(List.fromString("define   "))
+          )
+        ).to.eql(
+          [] 
+        );
         next();
       });
       it("integer", (next) => {
@@ -746,39 +756,73 @@ describe('パーサーコンビネーター', () => {
     });
     describe("S式", (next) => {
       it("atom", (next) => {
-        expect(
-          Pair.left(
-            List.head(
-              Parser.parse(
-                Parser.atom
-              )(List.fromString("123"))
-            )
+        Exp.match(Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.atom
+            )(List.fromString("123"))
           )
-        ).to.eql(
-          123 
-        );
-        expect(
-          Pair.left(
-            List.head(
-              Parser.parse(
-                Parser.atom
-              )(List.fromString("#t"))
-            )
+        ),{
+          atom: (value) => {
+            expect(value).to.eql(123)
+          }
+        })
+
+        // expect(
+        //   Pair.left(
+        //     List.head(
+        //       Parser.parse(
+        //         Parser.atom
+        //       )(List.fromString("123"))
+        //     )
+        //   )
+        // ).to.eql(
+        //   123 
+        // );
+        Exp.match(Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.atom
+            )(List.fromString("#t"))
           )
-        ).to.eql(
-          true
-        );
-        expect(
-          Pair.left(
-            List.head(
-              Parser.parse(
-                Parser.atom
-              )(List.fromString("\"abc\""))
-            )
+        ),{
+          atom: (value) => {
+            expect(value).to.eql(true)
+          }
+        })
+        // expect(
+        //   Pair.left(
+        //     List.head(
+        //       Parser.parse(
+        //         Parser.atom
+        //       )(List.fromString("#t"))
+        //     )
+        //   )
+        // ).to.eql(
+        //   true
+        // );
+        Exp.match(Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.atom
+            )(List.fromString("\"abc\""))
           )
-        ).to.eql(
-          "abc"
-        );
+        ),{
+          atom: (value) => {
+            expect(value).to.eql("abc")
+          }
+        })
+        // expect(
+        //   Pair.left(
+        //     List.head(
+        //       Parser.parse(
+        //         Parser.atom
+        //       )(List.fromString("\"abc\""))
+        //     )
+        //   )
+        // ).to.eql(
+        //   "abc"
+        // );
         next();
       });
       // it("sexp", (next) => {

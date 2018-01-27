@@ -8,6 +8,14 @@ const evaluate = require('../../lib/lisp/semantics.js');
 
 describe('式の評価', () => {
 
+  it('atomの評価のテスト', (next) => {
+    expect(
+      evaluate(Exp.atom(2), Env.empty)
+    ).to.eql(
+      ID.unit(2)
+    );
+    next();
+  });
   it('数値の評価のテスト', (next) => {
     expect(
       evaluate(Exp.num(2), Env.empty)

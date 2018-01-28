@@ -43,7 +43,7 @@ describe('式の評価', () => {
   describe('変数評価のテスト', () => {
     it('環境から変数の値を取り出すテスト', (next) => {
       const emptyEnv = Env.empty,
-        initEnv = Env.extend('a', 1, emptyEnv);
+        initEnv = Env.extend('a', 1)(emptyEnv);
       expect(
         evaluate(Exp.variable("a"), initEnv)
       ).to.eql(
@@ -53,7 +53,7 @@ describe('式の評価', () => {
     });
     it('存在しない変数は、評価されると undefined となる', (next) => {
       const emptyEnv = Env.empty,
-        initEnv = Env.extend('a', 1, emptyEnv);
+        initEnv = Env.extend('a', 1)(emptyEnv);
       expect(
         evaluate(Exp.variable("b"), initEnv)
       ).to.eql(

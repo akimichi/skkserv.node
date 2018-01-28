@@ -754,109 +754,148 @@ describe('パーサーコンビネーター', () => {
         next();
       });
     });
-    describe("S式", (next) => {
-      it("atom", (next) => {
-        Exp.match(Pair.left(
-          List.head(
-            Parser.parse(
-              Parser.atom
-            )(List.fromString("123"))
-          )
-        ),{
-          atom: (value) => {
-            expect(value).to.eql(123)
-          }
-        })
-
-        // expect(
-        //   Pair.left(
-        //     List.head(
-        //       Parser.parse(
-        //         Parser.atom
-        //       )(List.fromString("123"))
-        //     )
-        //   )
-        // ).to.eql(
-        //   123 
-        // );
-        Exp.match(Pair.left(
-          List.head(
-            Parser.parse(
-              Parser.atom
-            )(List.fromString("#t"))
-          )
-        ),{
-          atom: (value) => {
-            expect(value).to.eql(true)
-          }
-        })
-        // expect(
-        //   Pair.left(
-        //     List.head(
-        //       Parser.parse(
-        //         Parser.atom
-        //       )(List.fromString("#t"))
-        //     )
-        //   )
-        // ).to.eql(
-        //   true
-        // );
-        Exp.match(Pair.left(
-          List.head(
-            Parser.parse(
-              Parser.atom
-            )(List.fromString("\"abc\""))
-          )
-        ),{
-          atom: (value) => {
-            expect(value).to.eql("abc")
-          }
-        })
-        // expect(
-        //   Pair.left(
-        //     List.head(
-        //       Parser.parse(
-        //         Parser.atom
-        //       )(List.fromString("\"abc\""))
-        //     )
-        //   )
-        // ).to.eql(
-        //   "abc"
-        // );
-        next();
-      });
-      // it("sexp", (next) => {
-      //   expect(
-      //     PP.print(
-      //       Parser.parse(
-      //         Parser.sexp()
-      //       )(List.fromString("0.12"))
-      //     )
-      //   ).to.eql(
-      //     '[(0.12,[]),nil]'
-      //   );
-      //   expect(
-      //     PP.print(
-      //       Parser.parse(
-      //         Parser.sexp()
-      //       )(List.fromString("#f"))
-      //     )
-      //   ).to.eql(
-      //     '[(false,[]),nil]'
-      //   );
-      //   expect(
-      //     PP.print(
-      //       Parser.parse(
-      //         Parser.sexp()
-      //       )(List.fromString("\"a string\""))
-      //     )
-      //   ).to.eql(
-      //     '[(a string,[]),nil]'
-      //   );
-      //   next();
-      // });
-    });
   });
+  describe("S式", (next) => {
+    it("atom", (next) => {
+      Exp.match(Pair.left(
+            List.head(
+              Parser.parse(
+                Parser.atom
+                )(List.fromString("123"))
+              )
+            ),{
+        atom: (value) => {
+          expect(value).to.eql(123)
+        }
+      })
 
+      // expect(
+      //   Pair.left(
+      //     List.head(
+      //       Parser.parse(
+      //         Parser.atom
+      //       )(List.fromString("123"))
+      //     )
+      //   )
+      // ).to.eql(
+      //   123 
+      // );
+      Exp.match(Pair.left(
+            List.head(
+              Parser.parse(
+                Parser.atom
+                )(List.fromString("#t"))
+              )
+            ),{
+        atom: (value) => {
+          expect(value).to.eql(true)
+        }
+      })
+      // expect(
+      //   Pair.left(
+      //     List.head(
+      //       Parser.parse(
+      //         Parser.atom
+      //       )(List.fromString("#t"))
+      //     )
+      //   )
+      // ).to.eql(
+      //   true
+      // );
+      Exp.match(Pair.left(
+            List.head(
+              Parser.parse(
+                Parser.atom
+                )(List.fromString("\"abc\""))
+              )
+            ),{
+        atom: (value) => {
+          expect(value).to.eql("abc")
+        }
+      })
+      // expect(
+      //   Pair.left(
+      //     List.head(
+      //       Parser.parse(
+      //         Parser.atom
+      //       )(List.fromString("\"abc\""))
+      //     )
+      //   )
+      // ).to.eql(
+      //   "abc"
+      // );
+      next();
+    });
+    it("variable", (next) => {
+      Exp.match(Pair.left(
+            List.head(
+              Parser.parse(
+                Parser.variable
+                )(List.fromString("xyz"))
+              )
+            ),{
+        variable: (value) => {
+          expect(value).to.eql("xyz")
+        }
+      })
+      next();
+    });
+    it("list", function (next) {
+      this.timeout('5s');
+      Exp.match(Pair.left(
+            List.head(
+              Parser.parse(
+                Parser.list
+                )(List.fromString("(1 2 3)"))
+              )
+            ),{
+        list: (items) => {
+          expect(List.length(items)).to.eql(3)
+        }
+      })
+      Exp.match(Pair.left(
+            List.head(
+              Parser.parse(
+                Parser.list
+                )(List.fromString("(a #t \"string\")"))
+              )
+            ),{
+        list: (items) => {
+          expect(List.length(items)).to.eql(3)
+        }
+      })
+      next();
+    });
+    // it("sexp", (next) => {
+    //   expect(
+    //     PP.print(
+    //       Parser.parse(
+    //         Parser.sexp()
+    //       )(List.fromString("0.12"))
+    //     )
+    //   ).to.eql(
+    //     '[(0.12,[]),nil]'
+    //   );
+    //   expect(
+    //     PP.print(
+    //       Parser.parse(
+    //         Parser.sexp()
+    //       )(List.fromString("#f"))
+    //     )
+    //   ).to.eql(
+    //     '[(false,[]),nil]'
+    //   );
+    //   expect(
+    //     PP.print(
+    //       Parser.parse(
+    //         Parser.sexp()
+    //       )(List.fromString("\"a string\""))
+    //     )
+    //   ).to.eql(
+    //     '[(a string,[]),nil]'
+    //   );
+    //   next();
+    // });
+  });
 });
 

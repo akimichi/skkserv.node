@@ -459,7 +459,8 @@ describe('パーサーコンビネーター', () => {
       );
       next();
     });
-    it("int", (next) => {
+    it("int", function(next){
+      this.timeout('5s');
       expect(
         Pair.left(
           List.head(
@@ -468,8 +469,7 @@ describe('パーサーコンビネーター', () => {
             )(List.fromString("-123 abc"))
           ))
       ).to.eql(
-        -123
-        // '[(-123,[a,b,c,nil]),nil]'
+        -123 // '[(-123,[a,b,c,nil]),nil]'
       );
       expect(
         Pair.left(
@@ -555,24 +555,28 @@ describe('パーサーコンビネーター', () => {
       ).to.eql(
         0.123
       );
-      // expect(
-      //   PP.print(
-      //     Parser.parse(
-      //       Parser.numeric()
-      //     )(List.fromString("   -123   "))
-      //   )
-      // ).to.eql(
-      //   '[(-123,[]),nil]'
-      // );
-      // expect(
-      //   PP.print(
-      //     Parser.parse(
-      //       Parser.numeric()
-      //     )(List.fromString("   0.123   "))
-      //   )
-      // ).to.eql(
-      //   '[(0.123,[]),nil]'
-      // );
+      expect(
+        Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.numeric
+            )(List.fromString("-0.123"))
+          )
+        )
+      ).to.eql(
+        -0.123
+      );
+      expect(
+        Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.numeric
+            )(List.fromString("0.001"))
+          )
+        )
+      ).to.eql(
+        0.123
+      );
       next();
     });
     it("spaces", (next) => {
@@ -772,6 +776,17 @@ describe('パーサーコンビネーター', () => {
           expect(value).to.eql(123)
         }
       })
+      Exp.match(Pair.left(
+            List.head(
+              Parser.parse(
+                Parser.atom
+                )(List.fromString("-0.123"))
+              )
+            ),{
+        atom: (value) => {
+          expect(value).to.eql(-0.123)
+        }
+      })
 
       // expect(
       //   Pair.left(
@@ -830,6 +845,46 @@ describe('パーサーコンビネーター', () => {
       // );
       next();
     });
+    it("expression", function(next){
+      this.timeout('5s');
+      Exp.match(Pair.left(
+            List.head(
+              Parser.parse(
+                Parser.expression
+                )(List.fromString("#t"))
+              )
+            ),{
+        atom: (value) => {
+          expect(value).to.eql(true)
+        },
+      })
+      Exp.match(Pair.left(
+            List.head(
+              Parser.parse(
+                Parser.expression
+                )(List.fromString("123"))
+              )
+            ),{
+        atom: (value) => {
+          expect(value).to.eql(123)
+        },
+      })
+      Exp.match(Pair.left(
+            List.head(
+              Parser.parse(
+                Parser.expression
+                )(List.fromString("-123"))
+              )
+            ),{
+        atom: (value) => {
+          expect(value).to.eql(-123)
+        },
+        // variable: (value) => {
+        //   expect(value).to.eql(0.123)
+        // }
+      })
+      next();
+    });
     it("variable", function(next){
       this.timeout('5s');
       Exp.match(Pair.left(
@@ -846,7 +901,7 @@ describe('パーサーコンビネーター', () => {
       next();
     });
     it("list", function (next) {
-      this.timeout('s');
+      this.timeout('15s');
       Exp.match(Pair.left(
             List.head(
               Parser.parse(

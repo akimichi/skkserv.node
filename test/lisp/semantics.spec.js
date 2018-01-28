@@ -7,58 +7,51 @@ const expect = require('expect.js'),
 const evaluate = require('../../lib/lisp/semantics.js');
 
 describe('式の評価', () => {
-
-  it('atomの評価のテスト', (next) => {
-    expect(
-      evaluate(Exp.atom(2), Env.empty)
-    ).to.eql(
-      ID.unit(2)
-    );
-    next();
-  });
-  it('数値の評価のテスト', (next) => {
-    expect(
-      evaluate(Exp.num(2), Env.empty)
-    ).to.eql(
-      ID.unit(2)
-    );
-    next();
-  });
-  it('ブール値の評価のテスト', (next) => {
-    expect(
-      evaluate(Exp.bool(true), Env.empty)
-    ).to.eql(
-      ID.unit(true)
-    );
-    next();
-  });
-  it('文字列の評価のテスト', (next) => {
-    expect(
-      evaluate(Exp.string("これは文字列です"), Env.empty)
-    ).to.eql(
-      ID.unit("これは文字列です")
-    );
-    next();
+  describe('atomの評価', () => {
+    it('数値の評価のテスト', (next) => {
+      expect(
+          evaluate(Exp.atom(2), Env.empty)
+          ).to.eql(
+            ID.unit(2)
+            );
+      next();
+    });
+    it('ブール値の評価のテスト', (next) => {
+      expect(
+          evaluate(Exp.atom(true), Env.empty)
+          ).to.eql(
+            ID.unit(true)
+            );
+      next();
+    });
+    it('文字列の評価のテスト', (next) => {
+      expect(
+          evaluate(Exp.atom("これは文字列です"), Env.empty)
+          ).to.eql(
+            ID.unit("これは文字列です")
+            );
+      next();
+    });
   });
   describe('変数評価のテスト', () => {
     it('環境から変数の値を取り出すテスト', (next) => {
       const emptyEnv = Env.empty,
-        initEnv = Env.extend('a', 1)(emptyEnv);
+      initEnv = Env.extend('a', 1)(emptyEnv);
       expect(
-        evaluate(Exp.variable("a"), initEnv)
-      ).to.eql(
-        ID.unit(1)
-      );
+          evaluate(Exp.variable("a"), initEnv)
+          ).to.eql(
+            ID.unit(1)
+            );
       next();
     });
     it('存在しない変数は、評価されると undefined となる', (next) => {
       const emptyEnv = Env.empty,
-        initEnv = Env.extend('a', 1)(emptyEnv);
+      initEnv = Env.extend('a', 1)(emptyEnv);
       expect(
-        evaluate(Exp.variable("b"), initEnv)
-      ).to.eql(
-        ID.unit(undefined)
-      );
+          evaluate(Exp.variable("b"), initEnv)
+          ).to.eql(
+            ID.unit(undefined)
+            );
       next();
     });
   });

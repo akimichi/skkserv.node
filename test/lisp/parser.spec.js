@@ -588,7 +588,8 @@ describe('パーサーコンビネーター', () => {
       );
       next();
     });
-    it("comment", (next) => {
+    it("comment", function(next){
+      this.timeout('5s');
       expect(
         Pair.isEmpty(
           Pair.left(
@@ -630,7 +631,8 @@ describe('パーサーコンビネーター', () => {
         );
         next();
       });
-      it("identifier", (next) => {
+      it("identifier", function (next) {
+        this.timeout('5s');
         expect(
           Pair.left(
             List.head(
@@ -756,7 +758,8 @@ describe('パーサーコンビネーター', () => {
     });
   });
   describe("S式", (next) => {
-    it("atom", (next) => {
+    it("atom", function(next) {
+      this.timeout('5s');
       Exp.match(Pair.left(
             List.head(
               Parser.parse(
@@ -826,7 +829,8 @@ describe('パーサーコンビネーター', () => {
       // );
       next();
     });
-    it("variable", (next) => {
+    it("variable", function(next){
+      this.timeout('5s');
       Exp.match(Pair.left(
             List.head(
               Parser.parse(
@@ -841,7 +845,7 @@ describe('パーサーコンビネーター', () => {
       next();
     });
     it("list", function (next) {
-      this.timeout('5s');
+      this.timeout('s');
       Exp.match(Pair.left(
             List.head(
               Parser.parse(
@@ -858,6 +862,28 @@ describe('パーサーコンビネーター', () => {
               Parser.parse(
                 Parser.list
                 )(List.fromString("(a #t \"string\")"))
+              )
+            ),{
+        list: (items) => {
+          expect(List.length(items)).to.eql(3)
+        }
+      })
+      Exp.match(Pair.left(
+            List.head(
+              Parser.parse(
+                Parser.list
+                )(List.fromString("(+ 1 2 3)"))
+              )
+            ),{
+        list: (items) => {
+          expect(List.length(items)).to.eql(4)
+        }
+      })
+      Exp.match(Pair.left(
+            List.head(
+              Parser.parse(
+                Parser.list
+                )(List.fromString("(+ (- 1 2) 3)"))
               )
             ),{
         list: (items) => {

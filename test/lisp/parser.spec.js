@@ -493,8 +493,17 @@ describe('パーサーコンビネーター', () => {
             )(List.fromString("0.1"))
           ))
       ).to.eql(
-        0.1
-        // '[(0.1,[]),nil]'
+        0.1 // '[(0.1,[]),nil]'
+      );
+      expect(
+        Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.float
+            )(List.fromString("0.001"))
+          ))
+      ).to.eql(
+        0.001 // '[(0.1,[]),nil]'
       );
       expect(
         Pair.left(
@@ -504,8 +513,7 @@ describe('パーサーコンビネーター', () => {
             )(List.fromString("0.123"))
           ))
       ).to.eql(
-        0.123
-        // '[(0.123,[]),nil]'
+        0.123 // '[(0.123,[]),nil]'
       );
       expect(
         Pair.left(
@@ -515,8 +523,7 @@ describe('パーサーコンビネーター', () => {
             )(List.fromString("1.1"))
           ))
       ).to.eql(
-        1.1
-        // '[(1.1,[]),nil]'
+        1.1 // '[(1.1,[]),nil]'
       );
       expect(
         Pair.left(
@@ -575,7 +582,7 @@ describe('パーサーコンビネーター', () => {
           )
         )
       ).to.eql(
-        0.123
+        0.001
       );
       next();
     });

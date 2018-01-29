@@ -907,6 +907,54 @@ describe('パーサーコンビネーター', () => {
       })
       next();
     });
+    it("lambda", function(next){
+      this.timeout('5s');
+      Exp.match(Pair.left(
+            List.head(
+              Parser.parse(
+                Parser.lambda
+                )(List.fromString("(lambda (x) x)"))
+              )
+            ),{
+        lambda: (variable, bodyExpression) => {
+          Exp.match(variable, {
+            variable: (name) => {
+              expect(name).to.eql("x")
+            }
+          })
+          Exp.match(bodyExpression, {
+            variable: (name) => {
+              expect(name).to.eql("x")
+            }
+          })
+        }
+      })
+      Exp.match(Pair.left(
+        List.head(
+          Parser.parse(
+            Parser.lambda
+          )(List.fromString("(lambda (y) (+ y 1))"))
+        )
+      ),{
+        lambda: (variable, bodyExpression) => {
+          Exp.match(variable, {
+            variable: (name) => {
+              expect(name).to.eql("y")
+            }
+          })
+          Exp.match(bodyExpression, {
+            list: (items) => {
+              Exp.match(List.head(items), {
+                variable: (name) => {
+                  expect(name).to.eql("+")
+                }
+              })
+            }
+          })
+        }
+      })
+      next();
+    });
     it("list", function (next) {
       this.timeout('15s');
       Exp.match(Pair.left(

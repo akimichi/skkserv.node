@@ -15,7 +15,7 @@ describe('環境のテスト', () => {
           expect().fail()
         },
         left: (value) => {
-          expect(value).to.eql(undefined)
+          expect(value).to.eql("変数 dummy は、未定義です")
         },
       });
       // expect(

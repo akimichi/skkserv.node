@@ -77,8 +77,8 @@ describe('式の評価', () => {
         right: (value) => {
           expect().to.fail()
         },
-        left: (value) => {
-          expect(value).to.eql(undefined)
+        left: (message) => {
+          expect(message).to.eql("変数 b は、未定義です")
         }
       });
       // expect(
@@ -91,7 +91,8 @@ describe('式の評価', () => {
   });
   describe('ブール演算のテスト', () => {
     it('andのテスト', (next) => {
-      Either.match(evaluate(Exp.and(Exp.bool(true),Exp.bool(true)), Env.emptyEnv),{
+      // Either.match(evaluate(Exp.and(Exp.bool(true),Exp.bool(true)), Env.emptyEnv),{
+      Either.match(evaluate(Exp.and(Exp.atom(true),Exp.atom(true)), Env.emptyEnv),{
         right: (value) => {
           expect(value).to.eql(true)
         },
@@ -109,7 +110,8 @@ describe('式の評価', () => {
       next();
     });
     it('orのテスト', (next) => {
-      Either.match(evaluate(Exp.or(Exp.bool(false),Exp.bool(false)), Env.emptyEnv),{
+      // Either.match(evaluate(Exp.or(Exp.bool(false),Exp.bool(false)), Env.emptyEnv),{
+      Either.match(evaluate(Exp.or(Exp.atom(false),Exp.atom(false)), Env.emptyEnv),{
         right: (value) => {
           expect(value).to.eql(false)
         },
@@ -129,7 +131,8 @@ describe('式の評価', () => {
   });
   describe('数値演算のテスト', () => {
     it('addのテスト', (next) => {
-      Either.match(evaluate(Exp.add(Exp.num(0),Exp.num(1)), Env.emptyEnv),{
+      // Either.match(evaluate(Exp.add(Exp.num(0),Exp.num(1)), Env.emptyEnv),{
+      Either.match(evaluate(Exp.add(Exp.atom(0),Exp.atom(1)), Env.emptyEnv),{
         right: (value) => {
           expect(value).to.eql(1)
         },
@@ -151,7 +154,8 @@ describe('式の評価', () => {
     it('id(1)のテスト', (next) => {
       const x = Exp.variable("x"),
         id = Exp.lambda(x, x);
-      Either.match(evaluate(Exp.app(id,Exp.num(1)), Env.emptyEnv),{
+      // Either.match(evaluate(Exp.app(id,Exp.num(1)), Env.emptyEnv),{
+      Either.match(evaluate(Exp.app(id,Exp.atom(1)), Env.emptyEnv),{
         right: (value) => {
           expect(value).to.eql(1)
         },
@@ -170,12 +174,13 @@ describe('式の評価', () => {
     });
   });
   it('if式の評価のテスト', (next) => {
-    Either.match(evaluate(Exp.conditional(Exp.bool(true), Exp.num(1), Exp.num(0)), Env.empty),{
+    Either.match(evaluate(Exp.conditional(Exp.atom(true), Exp.atom(1), Exp.atom(0)), Env.empty),{
       right: (value) => {
         expect(value).to.eql(1)
       }
     });
-    Either.match(evaluate(Exp.conditional(Exp.bool(false), Exp.num(1), Exp.num(0)), Env.empty),{
+    // Either.match(evaluate(Exp.conditional(Exp.bool(false), Exp.num(1), Exp.num(0)), Env.empty),{
+    Either.match(evaluate(Exp.conditional(Exp.atom(false), Exp.atom(1), Exp.atom(0)), Env.empty),{
       right: (value) => {
         expect(value).to.eql(0)
       }

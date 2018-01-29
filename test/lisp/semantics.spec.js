@@ -3,33 +3,49 @@
 const expect = require('expect.js'),
   Exp = require('../../lib/lisp/exp.js'),
   Env = require('../../lib/lisp/env.js'),
-  ID = require('kansuu.js').monad.identity;
+  Either = require('kansuu.js').monad.either;
+  // M = require('kansuu.js').monad.identity;
 const evaluate = require('../../lib/lisp/semantics.js');
 
 describe('式の評価', () => {
   describe('atomの評価', () => {
     it('数値の評価のテスト', (next) => {
-      expect(
-          evaluate(Exp.atom(2), Env.empty)
-          ).to.eql(
-            ID.unit(2)
-            );
+      Either.match(evaluate(Exp.atom(2), Env.empty),{
+        right: (value) => {
+           expect(value).to.eql(2)
+        }
+      });
+      // expect(
+      //   evaluate(Exp.atom(2), Env.empty)
+      // ).to.eql(
+      //   M.unit(2)
+      // );
       next();
     });
     it('ブール値の評価のテスト', (next) => {
-      expect(
-          evaluate(Exp.atom(true), Env.empty)
-          ).to.eql(
-            ID.unit(true)
-            );
+      Either.match(evaluate(Exp.atom(true), Env.empty),{
+        right: (value) => {
+           expect(value).to.eql(true)
+        }
+      });
+      // expect(
+      //   evaluate(Exp.atom(true), Env.empty)
+      // ).to.eql(
+      //   M.unit(true)
+      // );
       next();
     });
     it('文字列の評価のテスト', (next) => {
-      expect(
-          evaluate(Exp.atom("これは文字列です"), Env.empty)
-          ).to.eql(
-            ID.unit("これは文字列です")
-            );
+      Either.match(evaluate(Exp.atom("これは文字列です"), Env.empty),{
+        right: (value) => {
+           expect(value).to.eql("これは文字列です")
+        }
+      });
+      // expect(
+      //   evaluate(Exp.atom("これは文字列です"), Env.empty)
+      // ).to.eql(
+      //   M.unit("これは文字列です")
+      // );
       next();
     });
   });
@@ -37,55 +53,97 @@ describe('式の評価', () => {
     it('環境から変数の値を取り出すテスト', (next) => {
       const emptyEnv = Env.empty,
       initEnv = Env.extend('a', 1)(emptyEnv);
-      expect(
-          evaluate(Exp.variable("a"), initEnv)
-          ).to.eql(
-            ID.unit(1)
-            );
+      Either.match(evaluate(Exp.variable("a"), initEnv),{
+        right: (value) => {
+           expect(value).to.eql(1)
+        }
+      });
+      Either.match(evaluate(Exp.variable("a"), initEnv),{
+        right: (value) => {
+           expect(value).to.eql(1)
+        }
+      });
+      // expect(
+      //     evaluate(Exp.variable("a"), initEnv)
+      //     ).to.eql(
+      //       M.unit(1)
+      //       );
       next();
     });
     it('存在しない変数は、評価されると undefined となる', (next) => {
       const emptyEnv = Env.empty,
-      initEnv = Env.extend('a', 1)(emptyEnv);
-      expect(
-          evaluate(Exp.variable("b"), initEnv)
-          ).to.eql(
-            ID.unit(undefined)
-            );
+        initEnv = Env.extend('a', 1)(emptyEnv);
+      Either.match(evaluate(Exp.variable("b"), initEnv),{
+        right: (value) => {
+          expect().to.fail()
+        },
+        left: (value) => {
+          expect(value).to.eql(undefined)
+        }
+      });
+      // expect(
+      //   evaluate(Exp.variable("b"), initEnv)
+      // ).to.eql(
+      //   M.unit(undefined)
+      // );
       next();
     });
   });
   describe('ブール演算のテスト', () => {
     it('andのテスト', (next) => {
-      expect(
-        evaluate(Exp.and(
-          Exp.bool(true),Exp.bool(true)
-        ), Env.empty)
-      ).to.eql(
-        ID.unit(true)
-      );
+      Either.match(evaluate(Exp.and(Exp.bool(true),Exp.bool(true)), Env.emptyEnv),{
+        right: (value) => {
+          expect(value).to.eql(true)
+        },
+        left: (value) => {
+          expect().to.fail()
+        }
+      });
+      // expect(
+      //   evaluate(Exp.and(
+      //     Exp.bool(true),Exp.bool(true)
+      //   ), Env.empty)
+      // ).to.eql(
+      //   M.unit(true)
+      // );
       next();
     });
     it('orのテスト', (next) => {
-      expect(
-        evaluate(Exp.or(
-          Exp.bool(false),Exp.bool(false)
-        ), Env.empty)
-      ).to.eql(
-        ID.unit(false)
-      );
+      Either.match(evaluate(Exp.or(Exp.bool(false),Exp.bool(false)), Env.emptyEnv),{
+        right: (value) => {
+          expect(value).to.eql(false)
+        },
+        left: (value) => {
+          expect().to.fail()
+        }
+      });
+      // expect(
+      //   evaluate(Exp.or(
+      //     Exp.bool(false),Exp.bool(false)
+      //   ), Env.empty)
+      // ).to.eql(
+      //   M.unit(false)
+      // );
       next();
     });
   });
   describe('数値演算のテスト', () => {
     it('addのテスト', (next) => {
-      expect(
-        evaluate(Exp.add(
-            Exp.num(0),Exp.num(1)
-        ), Env.empty)
-      ).to.eql(
-        ID.unit(1)
-      );
+      Either.match(evaluate(Exp.add(Exp.num(0),Exp.num(1)), Env.emptyEnv),{
+        right: (value) => {
+          expect(value).to.eql(1)
+        },
+        left: (value) => {
+          expect().to.fail()
+        }
+      });
+      // expect(
+      //   evaluate(Exp.add(
+      //       Exp.num(0),Exp.num(1)
+      //   ), Env.empty)
+      // ).to.eql(
+      //   M.unit(1)
+      // );
       next();
     });
   });
@@ -93,45 +151,51 @@ describe('式の評価', () => {
     it('id(1)のテスト', (next) => {
       const x = Exp.variable("x"),
         id = Exp.lambda(x, x);
-      expect(
-        evaluate(Exp.app(
-          id, Exp.num(1)
-        ), Env.empty)
-      ).to.eql(
-        ID.unit(1)
-      );
+      Either.match(evaluate(Exp.app(id,Exp.num(1)), Env.emptyEnv),{
+        right: (value) => {
+          expect(value).to.eql(1)
+        },
+        left: (value) => {
+          expect().to.fail()
+        }
+      });
+      // expect(
+      //   evaluate(Exp.app(
+      //     id, Exp.num(1)
+      //   ), Env.empty)
+      // ).to.eql(
+      //   M.unit(1)
+      // );
       next();
     });
   });
   it('if式の評価のテスト', (next) => {
-    expect(
-      evaluate(Exp.conditional(Exp.bool(true), Exp.num(1), Exp.num(0)),
-          Env.empty)
-    ).to.eql(
-      ID.unit(1)
-    );
-    expect(
-      evaluate(Exp.conditional(Exp.bool(false), Exp.num(1), Exp.num(0)),
-          Env.empty)
-    ).to.eql(
-      ID.unit(0)
-    );
-    expect(
-      evaluate(
-        Exp.conditional(Exp.isEqual(Exp.bool(false),Exp.bool(false)), 
-          Exp.num(1), Exp.num(0)),
-        Env.empty)
-    ).to.eql(
-      ID.unit(1)
-    );
-    expect(
-      evaluate(
-        Exp.conditional(Exp.isEqual(Exp.bool(true),Exp.bool(false)), 
-          Exp.num(1), Exp.num(0)),
-        Env.empty)
-    ).to.eql(
-      ID.unit(0)
-    );
+    Either.match(evaluate(Exp.conditional(Exp.bool(true), Exp.num(1), Exp.num(0)), Env.empty),{
+      right: (value) => {
+        expect(value).to.eql(1)
+      }
+    });
+    Either.match(evaluate(Exp.conditional(Exp.bool(false), Exp.num(1), Exp.num(0)), Env.empty),{
+      right: (value) => {
+        expect(value).to.eql(0)
+      }
+    });
+    // expect(
+    //   evaluate(
+    //     Exp.conditional(Exp.isEqual(Exp.bool(false),Exp.bool(false)), 
+    //       Exp.num(1), Exp.num(0)),
+    //     Env.empty)
+    // ).to.eql(
+    //   M.unit(1)
+    // );
+    // expect(
+    //   evaluate(
+    //     Exp.conditional(Exp.isEqual(Exp.bool(true),Exp.bool(false)), 
+    //       Exp.num(1), Exp.num(0)),
+    //     Env.empty)
+    // ).to.eql(
+    //   M.unit(0)
+    // );
     next();
   });
 });

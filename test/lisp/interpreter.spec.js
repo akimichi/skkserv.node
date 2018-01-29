@@ -8,46 +8,72 @@ const expect = require('expect.js'),
   Parser = require('../../lib/lisp/parser.js'),
   Interpreter = require('../../lib/lisp/interpreter.js');
 
-// const Env = require('../../lib/lisp/interpreter.js').env,
-//   Exp = require('../../lib/lisp/interpreter.js').exp,
-//   // Parser = require('../../lib/lisp/interpret.js').parser,
-//   Evalator = require('../../lib/lisp/interpreter.js').evaluator;
-
-// describe('インタープリター', () => {
-//   it('数値の評価のテスト', (next) => {
-//     const numericParser = Parser.numeric;
-//     Either.match(Evalator(numericParser)("123")(env.empty), {
-//       left: (value) => {
-//         expect().fail();
-//       },
-//       right: (value) => {
-//         expect(value).to.eql(123)
-//       }
-//     });
-//     next();
-//   });
-// });
-
 describe('インタープリター', () => {
   const emptyEnv = Env.empty;
-  it('数値の評価のテスト', (next) => {
-    Either.match(Interpreter.run("100")(emptyEnv),{
-      right: (value) => {
-        expect(value).to.eql(100)
-      },
-      left: (value) => {
-        expect().fail()
-      },
+  describe('atomの評価', () => {
+    it('数値の評価のテスト', (next) => {
+      Either.match(Interpreter.run("100")(emptyEnv),{
+        right: (value) => {
+          expect(value).to.eql(100)
+        },
+        left: (value) => {
+          expect().fail()
+        },
+      });
+      Either.match(Interpreter.run("-0.01")(emptyEnv),{
+        right: (value) => {
+          expect(value).to.eql(-0.01)
+        },
+        left: (value) => {
+          expect().fail()
+        },
+      });
+      next();
     });
-    Either.match(Interpreter.run("-0.01")(emptyEnv),{
-      right: (value) => {
-        expect(value).to.eql(-0.01)
-      },
-      left: (value) => {
-        expect().fail()
-      },
+    it('ブールの評価のテスト', (next) => {
+      Either.match(Interpreter.run("#t")(emptyEnv),{
+        right: (value) => {
+          expect(value).to.eql(true)
+        },
+        left: (value) => {
+          expect().fail()
+        },
+      });
+      Either.match(Interpreter.run("#f")(emptyEnv),{
+        right: (value) => {
+          expect(value).to.eql(false)
+        },
+        left: (value) => {
+          expect().fail()
+        },
+      });
+      next();
     });
-    next();
+  });
+  describe('変数の評価', () => {
+    const initEnv = Env.extend("a",0)(Env.empty);
+    it('変数の評価が成功する', (next) => {
+      Either.match(Interpreter.run("a")(initEnv),{
+        right: (value) => {
+          expect(value).to.eql(0)
+        },
+        left: (value) => {
+          expect().fail()
+        },
+      });
+      next();
+    });
+    it('変数の評価が失敗する', (next) => {
+      Either.match(Interpreter.run("b")(initEnv),{
+        right: (value) => {
+          expect().fail()
+        },
+        left: (value) => {
+          expect(value).to.eql(undefined)
+        },
+      });
+      next();
+    });
   });
 });
 

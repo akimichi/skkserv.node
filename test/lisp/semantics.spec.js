@@ -165,11 +165,27 @@ describe('式の評価', () => {
       });
       next();
     });
+    it('(succ 2)のテスト', (next) => {
+      const x = Exp.variable("x"),
+        y = Exp.variable("y"),
+        succ = Exp.lambda(x, Exp.succ(x));
+      Either.match(evaluate(Exp.app(succ, Exp.atom(2)), Env.emptyEnv),{
+        right: (value) => {
+          expect(value).to.eql(3)
+        },
+        left: (value) => {
+          expect().to.fail()
+        }
+      });
+      next();
+    });
     // it('((+ 1) 2)のテスト', (next) => {
     //   const x = Exp.variable("x"),
     //     y = Exp.variable("y"),
     //     plus = Exp.lambda(x, Exp.lambda(y, Exp.add(x,y)));
-    //   Either.match(evaluate(Exp.app(plus,Exp.atom(1)), Env.emptyEnv),{
+    //     // plus = Exp.lambda(x, Exp.lambda(y, Exp.add(x,y)));
+    //     // (\x -> (\y -> x + y))(1)(2)
+    //   Either.match(evaluate(Exp.app(Exp.app(plus,Exp.atom(1)), Exp.atom(1)), Env.emptyEnv),{
     //     right: (value) => {
     //       expect(value).to.eql(1)
     //     },

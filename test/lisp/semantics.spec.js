@@ -163,15 +163,22 @@ describe('式の評価', () => {
           expect().to.fail()
         }
       });
-      // expect(
-      //   evaluate(Exp.app(
-      //     id, Exp.num(1)
-      //   ), Env.empty)
-      // ).to.eql(
-      //   M.unit(1)
-      // );
       next();
     });
+    // it('((+ 1) 2)のテスト', (next) => {
+    //   const x = Exp.variable("x"),
+    //     y = Exp.variable("y"),
+    //     plus = Exp.lambda(x, Exp.lambda(y, Exp.add(x,y)));
+    //   Either.match(evaluate(Exp.app(plus,Exp.atom(1)), Env.emptyEnv),{
+    //     right: (value) => {
+    //       expect(value).to.eql(1)
+    //     },
+    //     left: (value) => {
+    //       expect().to.fail()
+    //     }
+    //   });
+    //   next();
+    // });
   });
   it('if式の評価のテスト', (next) => {
     Either.match(evaluate(Exp.conditional(Exp.atom(true), Exp.atom(1), Exp.atom(0)), Env.empty),{

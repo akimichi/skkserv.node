@@ -179,6 +179,18 @@ describe('式の評価', () => {
       });
       next();
     });
+    it('prelude環境を使った(succ 2)のテスト', (next) => {
+      const succ = Exp.variable("succ");
+      Either.match(evaluate(Exp.app(succ, Exp.atom(2)), Env.prelude(Env.emptyEnv)),{
+        right: (value) => {
+          expect(value).to.eql(3)
+        },
+        left: (value) => {
+          expect().to.fail()
+        }
+      });
+      next();
+    });
     it('(+ 1 2)のテスト', (next) => {
       const x = Exp.variable("x"),
         y = Exp.variable("y"),

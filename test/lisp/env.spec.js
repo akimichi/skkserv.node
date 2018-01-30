@@ -34,31 +34,44 @@ describe('環境のテスト', () => {
           expect().fail()
         },
       });
-      // expect(
-      //     Env.lookup('a', initEnv)
-      //     ).to.eql(1)
       next();
     });
   });
   describe('prelude環境を使う', () => {
-    const prelude = Env.prelude(emptyEnv);
     it('prelude環境から値を取り出す', (next) => {
-      Either.match(Env.lookup('+', prelude),{
+      Either.match(Env.lookup('succ', Env.prelude(emptyEnv)),{
         right: (value) => {
-          Exp.match(value,{
-            lambda: (arg, body) => {
-              Exp.match(arg, {
-                variable: (name) => {
-                  expect(name).to.eql("x")
-                }
-              });
-            }
-          });
+          expect(value).to.a("function")
+          // Exp.match(value,{
+          //   lambda: (arg, body) => {
+          //     Exp.match(arg, {
+          //       variable: (name) => {
+          //         expect(name).to.eql("x")
+          //       }
+          //     });
+          //   }
+          // });
         },
         left: (value) => {
           expect().fail()
         },
       });
+      // Either.match(Env.lookup('+', prelude),{
+      //   right: (value) => {
+      //     Exp.match(value,{
+      //       lambda: (arg, body) => {
+      //         Exp.match(arg, {
+      //           variable: (name) => {
+      //             expect(name).to.eql("x")
+      //           }
+      //         });
+      //       }
+      //     });
+      //   },
+      //   left: (value) => {
+      //     expect().fail()
+      //   },
+      // });
       next();
     });
   });

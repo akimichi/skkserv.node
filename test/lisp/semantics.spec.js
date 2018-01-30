@@ -187,7 +187,7 @@ describe('式の評価', () => {
         // (\x -> (\y -> x + y))(1)(2)
       Either.match(evaluate(Exp.app(Exp.app(plus,Exp.atom(1)), Exp.atom(2)), Env.emptyEnv),{
         right: (value) => {
-          expect(value).to.eql(1)
+          expect(value).to.eql(3)
         },
         left: (value) => {
           expect().to.fail()

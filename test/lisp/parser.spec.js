@@ -907,6 +907,25 @@ describe('パーサーコンビネーター', () => {
       })
       next();
     });
+    it("application", function(next){
+      this.timeout('5s');
+      Exp.match(Pair.left(
+            List.head(
+              Parser.parse(
+                Parser.app
+                )(List.fromString("(succ 1)"))
+              )
+            ),{
+        app: (operator, operands) => {
+          Exp.match(operator,{
+            variable: (name) => {
+              expect(name).to.eql("succ")
+            }
+          });
+        }
+      })
+      next();
+    });
     it("lambda", function(next){
       this.timeout('5s');
       Exp.match(Pair.left(
@@ -933,7 +952,7 @@ describe('パーサーコンビネーター', () => {
         List.head(
           Parser.parse(
             Parser.lambda
-          )(List.fromString("(lambda (y) (+ y 1))"))
+          )(List.fromString("(lambda (y) (succ y))"))
         )
       ),{
         lambda: (variable, bodyExpression) => {
@@ -943,16 +962,40 @@ describe('パーサーコンビネーター', () => {
             }
           })
           Exp.match(bodyExpression, {
-            list: (items) => {
-              Exp.match(List.head(items), {
+          app: (operator, operands) => {
+              Exp.match(operator, {
                 variable: (name) => {
-                  expect(name).to.eql("+")
+                  expect(name).to.eql("succ")
                 }
               })
             }
           })
         }
       })
+      // Exp.match(Pair.left(
+      //   List.head(
+      //     Parser.parse(
+      //       Parser.lambda
+      //     )(List.fromString("(lambda (y) (plus y 1))"))
+      //   )
+      // ),{
+      //   lambda: (variable, bodyExpression) => {
+      //     Exp.match(variable, {
+      //       variable: (name) => {
+      //         expect(name).to.eql("y")
+      //       }
+      //     })
+      //     Exp.match(bodyExpression, {
+      //       list: (items) => {
+      //         Exp.match(List.head(items), {
+      //           variable: (name) => {
+      //             expect(name).to.eql("plus")
+      //           }
+      //         })
+      //       }
+      //     })
+      //   }
+      // })
       next();
     });
     it("list", function (next) {
@@ -961,7 +1004,7 @@ describe('パーサーコンビネーター', () => {
             List.head(
               Parser.parse(
                 Parser.list
-                )(List.fromString("(1 2 3)"))
+                )(List.fromString("'(1 2 3)"))
               )
             ),{
         list: (items) => {
@@ -972,7 +1015,7 @@ describe('パーサーコンビネーター', () => {
             List.head(
               Parser.parse(
                 Parser.list
-                )(List.fromString("(a #t \"string\")"))
+                )(List.fromString("'(a #t \"string\")"))
               )
             ),{
         list: (items) => {
@@ -983,24 +1026,24 @@ describe('パーサーコンビネーター', () => {
             List.head(
               Parser.parse(
                 Parser.list
-                )(List.fromString("(+ 1 2 3)"))
+                )(List.fromString("'(+ 1 2 3)"))
               )
             ),{
         list: (items) => {
           expect(List.length(items)).to.eql(4)
         }
       })
-      Exp.match(Pair.left(
-            List.head(
-              Parser.parse(
-                Parser.list
-                )(List.fromString("(+ (- 1 2) 3)"))
-              )
-            ),{
-        list: (items) => {
-          expect(List.length(items)).to.eql(3)
-        }
-      })
+      // Exp.match(Pair.left(
+      //       List.head(
+      //         Parser.parse(
+      //           Parser.list
+      //           )(List.fromString("'(+ (- 1 2) 3)"))
+      //         )
+      //       ),{
+      //   list: (items) => {
+      //     expect(List.length(items)).to.eql(3)
+      //   }
+      // })
       next();
     });
   });

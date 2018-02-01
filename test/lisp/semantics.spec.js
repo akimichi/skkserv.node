@@ -179,7 +179,25 @@ describe('式の評価', () => {
       });
       next();
     });
-    it('prelude環境を使った(succ 2)のテスト', (next) => {
+    it('(+ 1 2)のテスト', (next) => {
+      const x = Exp.variable("x"),
+        y = Exp.variable("y"),
+        plus = Exp.lambda(x, Exp.lambda(y, Exp.add(x,y)));
+        // plus = Exp.lambda(x, Exp.lambda(y, Exp.add(x,y)));
+        // (\x -> (\y -> x + y))(1)(2)
+      Either.match(evaluate(Exp.app(Exp.app(plus,Exp.atom(1)), Exp.atom(2)), Env.emptyEnv),{
+        right: (value) => {
+          expect(value).to.eql(3)
+        },
+        left: (value) => {
+          expect().to.fail()
+        }
+      });
+      next();
+    });
+  });
+  describe("prelude環境を使った", () => {
+    it('(succ 2) のテスト', (next) => {
       const succ = Exp.variable("succ");
       Either.match(evaluate(Exp.app(succ, Exp.atom(2)), Env.prelude(Env.emptyEnv)),{
         right: (value) => {
@@ -191,13 +209,9 @@ describe('式の評価', () => {
       });
       next();
     });
-    it('(+ 1 2)のテスト', (next) => {
-      const x = Exp.variable("x"),
-        y = Exp.variable("y"),
-        plus = Exp.lambda(x, Exp.lambda(y, Exp.add(x,y)));
-        // plus = Exp.lambda(x, Exp.lambda(y, Exp.add(x,y)));
-        // (\x -> (\y -> x + y))(1)(2)
-      Either.match(evaluate(Exp.app(Exp.app(plus,Exp.atom(1)), Exp.atom(2)), Env.emptyEnv),{
+    it('(+ 1 2) のテスト', (next) => {
+      const plus = Exp.variable("+");
+      Either.match(evaluate(Exp.app(Exp.app(plus, Exp.atom(1)), Exp.atom(2)), Env.prelude(Env.emptyEnv)),{
         right: (value) => {
           expect(value).to.eql(3)
         },

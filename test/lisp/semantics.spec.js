@@ -221,6 +221,19 @@ describe('式の評価', () => {
       });
       next();
     });
+    // it('(today) のテスト', (next) => {
+    //   const today = Exp.variable("today!");
+    //   const _ = Exp.variable("_");
+    //   Either.match(evaluate(Exp.app(today, _), Env.prelude(Env.emptyEnv)),{
+    //     right: (value) => {
+    //       expect(value).to.eql(3)
+    //     },
+    //     left: (value) => {
+    //       expect().to.fail()
+    //     }
+    //   });
+    //   next();
+    // });
   });
   it('if式の評価のテスト', (next) => {
     Either.match(evaluate(Exp.conditional(Exp.atom(true), Exp.atom(1), Exp.atom(0)), Env.empty),{

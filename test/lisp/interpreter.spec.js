@@ -98,6 +98,14 @@ describe('インタープリター', () => {
           expect().fail()
         },
       });
+      Either.match(Interpreter.run("(BMI 70 1.75)")(preludeEnv),{
+        right: (value) => {
+          expect(value).to.be.within(22, 23);
+        },
+        left: (value) => {
+          expect().fail()
+        },
+      });
       next();
     });
   });

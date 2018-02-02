@@ -836,16 +836,35 @@ describe('パーサーコンビネーター', () => {
     it("application", function(next){
       this.timeout('5s');
       Exp.match(Pair.left(
-            List.head(
-              Parser.parse(
-                Parser.app
-                )(List.fromString("(succ 1)"))
-              )
-            ),{
+        List.head(
+          Parser.parse(
+            Parser.app
+          )(List.fromString("(succ 1)"))
+        )
+      ),{
         app: (operator, operands) => {
           Exp.match(operator,{
             variable: (name) => {
               expect(name).to.eql("succ")
+            }
+          });
+        }
+      })
+      Exp.match(Pair.left(
+        List.head(
+          Parser.parse(
+            Parser.app
+          )(List.fromString("(plus 1 2)"))
+        )
+      ),{
+        app: (operator, operand) => {
+          Exp.match(operator,{
+            app: (operator, operand) => {
+              Exp.match(operator, {
+                variable: (name) => {
+                  expect(name).to.eql("plus")
+                }
+              });
             }
           });
         }

@@ -211,7 +211,11 @@ describe('式の評価', () => {
     });
     it('(+ 1 2) のテスト', (next) => {
       const plus = Exp.variable("+");
-      Either.match(evaluate(Exp.app(Exp.app(plus, Exp.atom(1)), Exp.atom(2)), Env.prelude(Env.emptyEnv)),{
+      const expression = Exp.app(
+        Exp.app(plus, Exp.atom(1)), 
+        Exp.atom(2)
+      );
+      Either.match(evaluate(expression, Env.prelude(Env.emptyEnv)),{
         right: (value) => {
           expect(value).to.eql(3)
         },

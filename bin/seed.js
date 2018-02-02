@@ -9,7 +9,7 @@
 const env = process.env.NODE_ENV,
  config = require('../lib/config.js')(env);
 const uri = config.db.mongo.uri;
-
+console.log(`mongodb uri: ${uri}`)
 const loadDictionary = require('../lib/loadDictionary.js');
 
 const mongoose = require('mongoose');

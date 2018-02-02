@@ -75,6 +75,32 @@ describe('インタープリター', () => {
       next();
     });
   });
+  describe('関数適用の評価', () => {
+    const preludeEnv = Env.prelude(Env.empty);
+
+    it('1項関数のsuccの評価が成功する', (next) => {
+      Either.match(Interpreter.run("(succ 0)")(preludeEnv),{
+        right: (value) => {
+          expect(value).to.eql(1)
+        },
+        left: (value) => {
+          expect().fail()
+        },
+      });
+      next();
+    });
+    it('2項関数の+の評価が成功する', (next) => {
+      Either.match(Interpreter.run("(+ 10 20)")(preludeEnv),{
+        right: (value) => {
+          expect(value).to.eql(30)
+        },
+        left: (value) => {
+          expect().fail()
+        },
+      });
+      next();
+    });
+  });
 });
 
 

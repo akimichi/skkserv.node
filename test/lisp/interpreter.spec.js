@@ -89,7 +89,7 @@ describe('インタープリター', () => {
       });
       next();
     });
-    it('2項関数の+の評価が成功する', (next) => {
+    it('2項関数である+の評価が成功する', (next) => {
       Either.match(Interpreter.run("(+ 10 20)")(preludeEnv),{
         right: (value) => {
           expect(value).to.eql(30)

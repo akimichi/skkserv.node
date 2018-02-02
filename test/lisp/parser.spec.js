@@ -534,7 +534,16 @@ describe('パーサーコンビネーター', () => {
           ))
       ).to.eql(
         -1.1
-        // '[(-1.1,[]),nil]'
+      );
+      expect(
+        Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.float
+            )(List.fromString("-0.01234"))
+          ))
+      ).to.eql(
+        -0.01234
       );
       next();
     });
@@ -607,7 +616,7 @@ describe('パーサーコンビネーター', () => {
             List.head(
               Parser.parse(
                 Parser.comment
-              )(List.fromString("//  "))
+              )(List.fromString(";  "))
             )))
       ).to.eql(
         true 
@@ -738,33 +747,6 @@ describe('パーサーコンビネーター', () => {
         ).to.eql(
           "abc" 
         );
-        // expect(
-        //   PP.print(
-        //     Parser.parse(
-        //       Parser.string()
-        //     )(List.fromString("\"abc\""))
-        //   )
-        // ).to.eql(
-        //   '[(abc,[]),nil]'
-        // );
-        // expect(
-        //   PP.print(
-        //     Parser.parse(
-        //       Parser.string()
-        //     )(List.fromString("  \"abc\"  "))
-        //   )
-        // ).to.eql(
-        //   '[(abc,[]),nil]'
-        // );
-        // expect(
-        //   PP.print(
-        //     Parser.parse(
-        //       Parser.string()
-        //     )(List.fromString("  \"  abc  \"  "))
-        //   )
-        // ).to.eql(
-        //   '[(  abc  ,[]),nil]'
-        // );
         next();
       });
     });

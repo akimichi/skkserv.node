@@ -29,7 +29,7 @@ describe('Entry model', () => {
   });
 
   it('should be able to save without errors', function (done) {
-    this.timeout('15s');
+    this.timeout('5s');
     entry.save()
       .then(document => {
         // should.not.exist(err);
@@ -62,7 +62,8 @@ describe('Entry model', () => {
       //   });
       // })
     });
-    it('lispを使う', (done) => {
+    it('lispを使う', function(done) {
+      this.timeout('5s');
       Entry.runLisp('(succ 9)', (err, response) => {
         expect(response).to.equal('1/10;(succ 9)/\n')
       });

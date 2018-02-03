@@ -63,28 +63,29 @@ describe('Entry model', () => {
       // })
     });
     it('lispを使う', (done) => {
-      const ai = new Entry({
-        yomi: 'succ',
-        candidates: [""]
+      Entry.runLisp('(succ 9)', (err, response) => {
+        expect(response).to.equal('1/10;(succ 9)/\n')
       });
-      ai.save()
-        .then(document => {
-          // should.not.exist(err);
-          expect(document.yomi).to.equal("あい")
-          Entry.henkan('あい', (err, response) => {
-            expect(response).to.equal('1/愛/藍/相/\n')
-            done();
-          });
-        })
-      // ai.save((err, document) => {
-      //   should.not.exist(err);
-      //   Entry.henkan('あい', (err, response) => {
-      //     expect(response).to.equal(
-      //       '1/愛/藍/相/\n'
-      //     )
-      //     done();
-      //   });
+      Entry.runLisp('(BMI 70 1.75)', (err, response) => {
+        expect(response).to.equal('1/22.857142857142858;(BMI 70 1.75)/\n')
+      });
+      // Entry.runLisp('(today!)', (err, response) => {
+      //   expect(response).to.equal('1/10;(succ 9)/\n')
       // });
+      done();
+      // const succ = new Entry({
+      //   yomi: '(succ)',
+      //   candidates: ["(lambda (x) (succ x))"]
+      // });
+      // succ.save()
+      //   .then(document => {
+      //     // should.not.exist(err);
+      //     expect(document.yomi).to.equal("あい")
+      //     Entry.henkan('あい', (err, response) => {
+      //       expect(response).to.equal('1/愛/藍/相/\n')
+      //       done();
+      //     });
+      //   })
     });
   });
 });

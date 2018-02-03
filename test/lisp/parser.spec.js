@@ -842,7 +842,7 @@ describe('パーサーコンビネーター', () => {
           )(List.fromString("(succ 1)"))
         )
       ),{
-        app: (operator, operands) => {
+        app: (operator, operand) => {
           Exp.match(operator,{
             variable: (name) => {
               expect(name).to.eql("succ")

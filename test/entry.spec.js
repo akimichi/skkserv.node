@@ -60,6 +60,30 @@ describe('Entry model', () => {
       //     )
       //     done();
       //   });
+      // })
+    });
+    it('lispを使う', (done) => {
+      const ai = new Entry({
+        yomi: 'succ',
+        candidates: [""]
+      });
+      ai.save()
+        .then(document => {
+          // should.not.exist(err);
+          expect(document.yomi).to.equal("あい")
+          Entry.henkan('あい', (err, response) => {
+            expect(response).to.equal('1/愛/藍/相/\n')
+            done();
+          });
+        })
+      // ai.save((err, document) => {
+      //   should.not.exist(err);
+      //   Entry.henkan('あい', (err, response) => {
+      //     expect(response).to.equal(
+      //       '1/愛/藍/相/\n'
+      //     )
+      //     done();
+      //   });
       // });
     });
   });

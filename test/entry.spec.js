@@ -17,25 +17,25 @@ const helper = require('./helper.js');
 describe('Entry model', () => {
   const entry = entries.tatsukawa;
 
-  // before(done => {
-  //   entry.remove()
-  //     .then(() => {
-  //       done(); 
-  //     })
-  //     .catch((error) => {
-  //       done(error);  
-  //     });
-  //     done();
-  // });
+  before(done => {
+    entry.remove()
+      .then(() => {
+        done(); 
+      })
+      .catch(err => {
+        done(err);  
+      });
+      // done();
+  });
 
   it('should be able to save without errors', function (done) {
     this.timeout('15s');
     entry.save()
       .then(document => {
-        should.not.exist(err);
+        // should.not.exist(err);
         expect(document.yomi).to.equal("たつかわ")
+        done();
       })
-    done();
   });
   describe('Entry#henkan', () => {
     it('should be able to henkan', (done) => {
@@ -45,9 +45,12 @@ describe('Entry model', () => {
       });
       ai.save()
         .then(document => {
-          should.not.exist(err);
-          expect(document.yomi).to.equal("たつかわ")
-          done();
+          // should.not.exist(err);
+          expect(document.yomi).to.equal("あい")
+          Entry.henkan('あい', (err, response) => {
+            expect(response).to.equal('1/愛/藍/相/\n')
+            done();
+          });
         })
       // ai.save((err, document) => {
       //   should.not.exist(err);

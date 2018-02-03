@@ -14,7 +14,7 @@ $ npm test
 
 ~~~
 $ npm run seed
-$ npm run start-server
+$ npm run start
 ~~~
 
 

@@ -29,12 +29,12 @@ EntrySchema.statics.henkan = function (yomi, callback) {
       const candidates = entry.candidates.join("/");
       callback(null, `1/${candidates}/\n`);
     } else {
-      callback(null, `4${yomi} `);
+      callback(`4${yomi}`);
     }
   });
 }
 
-// Entry#jikko
+// Entry#runLisp
 // 読みをもとにlisp評価器を実行する
 EntrySchema.statics.runLisp = function (yomi, callback) {
   Either.match(Interpreter.run(yomi)(preludeEnv),{
@@ -42,7 +42,7 @@ EntrySchema.statics.runLisp = function (yomi, callback) {
       callback(null, `1/${value};${yomi}/\n`);
     },
     left: (value) => {
-      callback(value);
+      callback(`4${value}`);
     },
   });
     

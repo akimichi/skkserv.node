@@ -16,11 +16,11 @@ describe('式の評価', () => {
            List.match(items, {
              cons: (head, tail) => {
                expect(head).to.eql(1)
+               next();
              }
            });
         }
       });
-      next();
     });
     it('consを評価してリストを返す', (next) => {
       Either.match(evaluate(Exp.cons(Exp.atom("a"), Exp.nil()), Env.empty),{

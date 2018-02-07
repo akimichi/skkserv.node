@@ -5,6 +5,7 @@ const expect = require('expect.js'),
   Pair = require('kansuu.js').pair,
   Either = require('kansuu.js').either,
   List = require('kansuu.js').monad.list,
+  Exp = require('../../lib/lisp/exp.js'),
   Parser = require('../../lib/lisp/parser.js'),
   Interpreter = require('../../lib/lisp/interpreter.js');
 
@@ -56,18 +57,29 @@ describe('インタープリター', () => {
         right: (list) => {
            List.match(list, {
              cons: (head, tail) => {
-               expect(head).to.eql(0)
+               Exp.match(head, {
+                 atom: (value) => {
+                   expect(value).to.eql(1)
+                 }
+               })
              }
            });
-          expect(value).to.eql(100)
         },
         left: (value) => {
           expect().fail()
         },
       });
-      Either.match(Interpreter.run("-0.01")(emptyEnv),{
-        right: (value) => {
-          expect(value).to.eql(-0.01)
+      Either.match(Interpreter.run("'(\"a\" \"b\")")(emptyEnv),{
+        right: (list) => {
+           List.match(list, {
+             cons: (head, tail) => {
+               Exp.match(head, {
+                 atom: (value) => {
+                   expect(value).to.eql("a")
+                 }
+               })
+             }
+           });
         },
         left: (value) => {
           expect().fail()

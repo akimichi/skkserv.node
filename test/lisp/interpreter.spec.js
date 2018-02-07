@@ -50,6 +50,32 @@ describe('インタープリター', () => {
       next();
     });
   });
+  describe('listの評価', () => {
+    it('リスト評価のテスト', (next) => {
+      Either.match(Interpreter.run("'(1 2 3)")(emptyEnv),{
+        right: (list) => {
+           List.match(list, {
+             cons: (head, tail) => {
+               expect(head).to.eql(0)
+             }
+           });
+          expect(value).to.eql(100)
+        },
+        left: (value) => {
+          expect().fail()
+        },
+      });
+      Either.match(Interpreter.run("-0.01")(emptyEnv),{
+        right: (value) => {
+          expect(value).to.eql(-0.01)
+        },
+        left: (value) => {
+          expect().fail()
+        },
+      });
+      next();
+    });
+  });
   describe('変数の評価', () => {
     const initEnv = Env.extend("a",0)(Env.empty);
     it('変数の評価が成功する', (next) => {

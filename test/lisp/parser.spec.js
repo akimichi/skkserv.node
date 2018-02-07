@@ -1,6 +1,7 @@
 "use strict";
 
 const expect = require('expect.js'),
+  array = require('kansuu.js').array,
   Pair = require('kansuu.js').pair,
   List = require('kansuu.js').monad.list,
   Exp = require('../../lib/lisp/exp.js'),
@@ -945,7 +946,7 @@ describe('パーサーコンビネーター', () => {
     });
     describe("リストをパースする",  ()  =>{
       it("list", function (next) {
-        this.timeout('15s');
+        this.timeout('30s');
         Exp.match(Pair.left(
           List.head(
             Parser.parse(
@@ -955,6 +956,14 @@ describe('パーサーコンビネーター', () => {
         ),{
           list: (items) => {
             expect(List.length(items)).to.eql(3)
+
+            expect(array.map(List.toArray(items))(item => { 
+              return Exp.match(item, {
+                atom: (value) => {
+                  return value;
+                }
+              })
+            })).to.eql([1,2,3])
           }
         })
         Exp.match(Pair.left(
@@ -990,9 +999,9 @@ describe('パーサーコンビネーター', () => {
             expect(List.length(items)).to.eql(3)
           }
         })
-      next();
+        next();
+      });
     });
-  });
   });
 });
 

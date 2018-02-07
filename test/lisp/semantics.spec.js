@@ -22,6 +22,18 @@ describe('式の評価', () => {
       });
       next();
     });
+    it('consを評価してリストを返す', (next) => {
+      Either.match(evaluate(Exp.cons(Exp.atom("a"), Exp.nil()), Env.empty),{
+        right: (items) => {
+           List.match(items, {
+             cons: (head, tail) => {
+               expect(head).to.eql("a")
+             }
+           });
+        }
+      });
+      next();
+    });
   });
   describe('atomの評価', () => {
     it('数値の評価のテスト', (next) => {

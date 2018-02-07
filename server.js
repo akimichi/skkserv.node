@@ -16,7 +16,6 @@ const skkService = require('./lib/service.js').skk;
 const server = net.createServer(skkService),
  port = config.port;
 
-// server.listen(port, '127.0.0.1', () => {
 server.listen(port, '0.0.0.0', () => {
   const addr = server.address();
   console.log(`Listening Start on Server - ${addr.address}:${addr.port}`);

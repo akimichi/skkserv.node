@@ -943,54 +943,56 @@ describe('パーサーコンビネーター', () => {
       // })
       next();
     });
-    it("list", function (next) {
-      this.timeout('15s');
-      Exp.match(Pair.left(
-            List.head(
-              Parser.parse(
-                Parser.list
-                )(List.fromString("'(1 2 3)"))
-              )
-            ),{
-        list: (items) => {
-          expect(List.length(items)).to.eql(3)
-        }
-      })
-      Exp.match(Pair.left(
-            List.head(
-              Parser.parse(
-                Parser.list
-                )(List.fromString("'(a #t \"string\")"))
-              )
-            ),{
-        list: (items) => {
-          expect(List.length(items)).to.eql(3)
-        }
-      })
-      Exp.match(Pair.left(
-            List.head(
-              Parser.parse(
-                Parser.list
-                )(List.fromString("'(+ 1 2 3)"))
-              )
-            ),{
-        list: (items) => {
-          expect(List.length(items)).to.eql(4)
-        }
-      })
-      // Exp.match(Pair.left(
-      //       List.head(
-      //         Parser.parse(
-      //           Parser.list
-      //           )(List.fromString("'(+ (- 1 2) 3)"))
-      //         )
-      //       ),{
-      //   list: (items) => {
-      //     expect(List.length(items)).to.eql(3)
-      //   }
-      // })
+    describe("リストをパースする",  ()  =>{
+      it("list", function (next) {
+        this.timeout('15s');
+        Exp.match(Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.list
+            )(List.fromString("'(1 2 3)"))
+          )
+        ),{
+          list: (items) => {
+            expect(List.length(items)).to.eql(3)
+          }
+        })
+        Exp.match(Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.list
+            )(List.fromString("'(a #t \"string\")"))
+          )
+        ),{
+          list: (items) => {
+            expect(List.length(items)).to.eql(3)
+          }
+        })
+        Exp.match(Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.list
+            )(List.fromString("'(+ 1 2 3)"))
+          )
+        ),{
+          list: (items) => {
+            expect(List.length(items)).to.eql(4)
+          }
+        })
+        Exp.match(Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.list
+            )(List.fromString("'(+ (- 1 2) 3)"))
+          )
+        ),{
+          list: (items) => {
+            expect(List.length(items)).to.eql(3)
+          }
+        })
       next();
     });
+  });
   });
 });
 

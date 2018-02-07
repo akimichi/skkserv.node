@@ -3,6 +3,7 @@
 
 const mongoose     = require('mongoose'),
   Schema       = mongoose.Schema;
+const expect = require('expect.js');
 
 const Pair = require('kansuu.js').pair,
   Either = require('kansuu.js').either,
@@ -21,16 +22,24 @@ const EntrySchema   = new Schema({
 
 // Entry#henkan
 // 読みをもとに候補を返す。
+// henkan:: String -> [String] | String
 EntrySchema.statics.henkan = function (yomi, callback) {
   this.findOne({ 'yomi': yomi }, function (err, entry) {
     if (err) {
       callback(err);
     } else if (entry) {
-      const candidates = entry.candidates.join("/");
-      callback(null, `1/${candidates}/\n`);
+      callback(null, entry.candidates);
     } else {
-      callback(`4${yomi}`);
+      callback(yomi);
     }
+    // if (err) {
+    //   callback(err);
+    // } else if (entry) {
+    //   const candidates = entry.candidates.join("/");
+    //   callback(null, `1/${candidates}/\n`);
+    // } else {
+    //   callback(`4${yomi}`);
+    // }
   });
 }
 
@@ -39,12 +48,20 @@ EntrySchema.statics.henkan = function (yomi, callback) {
 EntrySchema.statics.runLisp = function (yomi, callback) {
   Either.match(Interpreter.run(yomi)(preludeEnv),{
     right: (value) => {
-      callback(null, `1/${value};${yomi}/\n`);
+      callback(null, value);
     },
-    left: (value) => {
-      callback(`4${value}`);
+    left: (message) => {
+      callback(message);
     },
   });
+  // Either.match(Interpreter.run(yomi)(preludeEnv),{
+  //   right: (value) => {
+  //     callback(null, `1/${value};${yomi}/\n`);
+  //   },
+  //   left: (value) => {
+  //     callback(`4${value}`);
+  //   },
+  // });
     
   // yomi は (function arg...) の形式をしている。
   // 一方で、辞書には (function)の読みで登録されている。

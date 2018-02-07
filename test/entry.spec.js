@@ -39,16 +39,18 @@ describe('Entry model', () => {
   });
   describe('Entry#henkan', () => {
     it('should be able to henkan', (done) => {
+      const candidates = ["愛","藍","相"];
       const ai = new Entry({
         yomi: 'あい',
-        candidates: ["愛","藍","相"]
+        candidates: candidates
       });
       ai.save()
         .then(document => {
           // should.not.exist(err);
           expect(document.yomi).to.equal("あい")
           Entry.henkan('あい', (err, response) => {
-            expect(response).to.equal('1/愛/藍/相/\n')
+            console.log(response)
+            expect(response[0]).to.equal("愛")
             done();
           });
         })
@@ -65,14 +67,11 @@ describe('Entry model', () => {
     it('lispを使う', function(done) {
       this.timeout('5s');
       Entry.runLisp('(succ 9)', (err, response) => {
-        expect(response).to.equal('1/10;(succ 9)/\n')
+        expect(response).to.equal(10)
       });
       Entry.runLisp('(BMI 70 1.75)', (err, response) => {
-        expect(response).to.equal('1/22.857142857142858;(BMI 70 1.75)/\n')
+        expect(response).to.equal(22.857142857142858)
       });
-      // Entry.runLisp('(today!)', (err, response) => {
-      //   expect(response).to.equal('1/10;(succ 9)/\n')
-      // });
       done();
       // const succ = new Entry({
       //   yomi: '(succ)',

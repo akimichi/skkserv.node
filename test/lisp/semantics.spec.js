@@ -3,11 +3,26 @@
 const expect = require('expect.js'),
   Exp = require('../../lib/lisp/exp.js'),
   Env = require('../../lib/lisp/env.js'),
+  List = require('kansuu.js').monad.list,
   Either = require('kansuu.js').monad.either;
   // M = require('kansuu.js').monad.identity;
 const evaluate = require('../../lib/lisp/semantics.js');
 
 describe('式の評価', () => {
+  describe('リストの評価', () => {
+    it('listの評価', (next) => {
+      Either.match(evaluate(Exp.list(List.unit(1)), Env.empty),{
+        right: (items) => {
+           List.match(items, {
+             cons: (head, tail) => {
+               expect(head).to.eql(1)
+             }
+           });
+        }
+      });
+      next();
+    });
+  });
   describe('atomの評価', () => {
     it('数値の評価のテスト', (next) => {
       Either.match(evaluate(Exp.atom(2), Env.empty),{

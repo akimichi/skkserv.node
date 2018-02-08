@@ -59,7 +59,22 @@ Entry.remove({},(err) => {
     throw new Error(err)
   } else {
     console.log('Entry removed');
-    loadDictionary.load('./resource/SKK-JISYO.L');
+    loadDictionary.load('./resource/SKK-JISYO.L', (err, result) => {
+      if(err) {
+        db.close();
+        process.exit();
+      } else {
+        loadDictionary.load('./resource/SKK-JISYO.fullname', (err, result) => {
+          if(err) {
+            db.close();
+            process.exit();
+          } else {
+            db.close();
+            process.exit();
+          } 
+        });
+      }
+    });
     // loadDictionary.load('./resource/SKK-JISYO.ML');
     // // loadDictionary.load('./resource/SKK-JISYO.S', callback);
     // loadDictionary.load('./resource/SKK-JISYO.M', callback);

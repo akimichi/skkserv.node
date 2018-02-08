@@ -68,12 +68,12 @@ MongoClient.connect(uri, (err, db) => {
       throw new Error(err)
     } else {
       console.log('Entry removed');
-      loadDictionary.load('./resource/SKK-JISYO.L', (err, result) => {
+      loadDictionary.load(collection, './resource/SKK-JISYO.L', (err, result) => {
         if(err) {
           db.close();
           process.exit();
         } else {
-          loadDictionary.load('./resource/SKK-JISYO.fullname', (err, result) => {
+          loadDictionary.load(collection, './resource/SKK-JISYO.fullname', (err, result) => {
             if(err) {
               db.close();
               process.exit();

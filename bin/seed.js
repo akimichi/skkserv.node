@@ -10,7 +10,7 @@ const env = process.env.NODE_ENV,
  config = require('../lib/config.js')(env),
  uri = config.db.mongo.uri;
 
-console.log(`mongodb uri: ${uri}`)
+// console.log(`mongodb uri: ${uri}`)
 const loadDictionary = require('../lib/loadDictionary.js');
 
 const mongoose = require('mongoose');
@@ -27,35 +27,6 @@ const DB = mongoose.connect(
 const MongoClient = require('mongodb').MongoClient;
 
 const Entry = require('../models/entry.js');
-
-
-const callback = (line) => {
-  if(/^;;.+$/.test(line) == false) {
-    // console.log(line) 
-    const regex = /^(\S+)\s\/([^\/].+)\//; 
-    const matchResult = line.match(regex);   
-    if(matchResult) {
-      const yomi = matchResult[1];
-      // console.log(matchResult[2])
-      const candidates = matchResult[2].split('/');
-      // console.log(candidates)
-      const entry = new Entry({
-        yomi: yomi,
-        candidates: candidates 
-      });
-      return entry; 
-      // entry.save()
-      //   .then((savedEntry) => {
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //     mongoose.disconnect();
-      //   });
-    } else {
-      return null;
-    }
-  }
-};
 
 MongoClient.connect(uri, (err, db) => {
   console.log(`connecting ${uri}`)

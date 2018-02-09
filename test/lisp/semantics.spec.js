@@ -267,33 +267,16 @@ describe('式の評価', () => {
     // });
   });
   it('if式の評価のテスト', (next) => {
-    Either.match(evaluate(Exp.conditional(Exp.atom(true), Exp.atom(1), Exp.atom(0)), Env.empty),{
+    Either.match(evaluate(Exp.ifExpr(Exp.atom(true), Exp.atom(1), Exp.atom(0)), Env.empty),{
       right: (value) => {
         expect(value).to.eql(1)
       }
     });
-    // Either.match(evaluate(Exp.conditional(Exp.bool(false), Exp.num(1), Exp.num(0)), Env.empty),{
-    Either.match(evaluate(Exp.conditional(Exp.atom(false), Exp.atom(1), Exp.atom(0)), Env.empty),{
+    Either.match(evaluate(Exp.ifExpr(Exp.atom(false), Exp.atom(1), Exp.atom(0)), Env.empty),{
       right: (value) => {
         expect(value).to.eql(0)
       }
     });
-    // expect(
-    //   evaluate(
-    //     Exp.conditional(Exp.isEqual(Exp.bool(false),Exp.bool(false)), 
-    //       Exp.num(1), Exp.num(0)),
-    //     Env.empty)
-    // ).to.eql(
-    //   M.unit(1)
-    // );
-    // expect(
-    //   evaluate(
-    //     Exp.conditional(Exp.isEqual(Exp.bool(true),Exp.bool(false)), 
-    //       Exp.num(1), Exp.num(0)),
-    //     Env.empty)
-    // ).to.eql(
-    //   M.unit(0)
-    // );
     next();
   });
 });

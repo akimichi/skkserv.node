@@ -944,6 +944,25 @@ describe('パーサーコンビネーター', () => {
       // })
       next();
     });
+    it("if式", function(next){
+      this.timeout('5s');
+      Exp.match(Pair.left(
+            List.head(
+              Parser.parse(
+                Parser.ifExpr
+                )(List.fromString("(if #t 1 2)"))
+              )
+            ),{
+        ifExpr: (predicate, consequent, alternative) => {
+          Exp.match(predicate, {
+            atom: (value) => {
+              expect(value).to.eql(true)
+            }
+          })
+        }
+      })
+      next();
+    });
     describe("リストをパースする",  ()  =>{
       it("list", function (next) {
         this.timeout('30s');

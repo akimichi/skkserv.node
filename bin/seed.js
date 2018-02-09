@@ -11,7 +11,7 @@ const env = process.env.NODE_ENV,
  uri = config.db.mongo.uri;
 
 // console.log(`mongodb uri: ${uri}`)
-const loadDictionary = require('../lib/loadDictionary.js');
+// const loadDictionary = require('../lib/loadDictionary.js');
 
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
@@ -28,6 +28,34 @@ const MongoClient = require('mongodb').MongoClient;
 
 const Entry = require('../models/entry.js');
 
+const loadDictionary = (collection, path, callback) => {
+  const fs = require('fs'),
+    readline = require('readline'),
+    iconvLite = require('iconv-lite');
+  const batch = collection.initializeUnorderedBulkOp();
+
+  const content = fs.readFileSync(path);
+  const lines = iconvLite.decode(content, "EUC-JP").toString().split("\n");
+  lines.forEach((line) => {
+    if(/^;;.+$/.test(line) == false) {
+      const regex = /^(\S+)\s\/([^\/].+)\//; 
+      const matchResult = line.match(regex);   
+
+      if(matchResult) {
+        const yomi = matchResult[1];
+        const candidates = matchResult[2].split('/');
+        const entry = {
+          'yomi': yomi,
+          'candidates': candidates
+        };
+        batch.insert(entry);
+        // batch.find({yomi: yomi}).upsert().update({$addToSet: {candidates: candidates}});
+      }
+    }
+  });
+  batch.execute(callback);
+};
+
 MongoClient.connect(uri, (err, db) => {
   console.log(`connecting ${uri}`)
   if (err) return console.error(err);
@@ -39,12 +67,12 @@ MongoClient.connect(uri, (err, db) => {
       throw new Error(err)
     } else {
       console.log('Entry removed');
-      loadDictionary.load(collection, './resource/SKK-JISYO.L', (err, result) => {
+      loadDictionary(collection, './resource/SKK-JISYO.L', (err, result) => {
         if(err) {
           db.close();
           process.exit();
         } else {
-          loadDictionary.load(collection, './resource/SKK-JISYO.fullname', (err, result) => {
+          loadDictionary(collection, './resource/SKK-JISYO.fullname', (err, result) => {
             if(err) {
               db.close();
               process.exit();

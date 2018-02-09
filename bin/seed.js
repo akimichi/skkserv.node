@@ -57,6 +57,45 @@ const loadDictionary = (collection, path, callback) => {
     batch.execute(callback);
   });
 };
+// const loadDictionary = (collection, path) => {
+//   const fs = require('fs'),
+//     readline = require('readline'),
+//     iconvLite = require('iconv-lite');
+//   return new Promise(function(resolve, reject) {
+//     const batch = collection.initializeUnorderedBulkOp();
+
+//     const content = fs.readFileSync(path);
+//     const lines = iconvLite.decode(content, "EUC-JP").toString().split("\n");
+//     lines.forEach((line) => {
+//       if(/^;;.+$/.test(line) == false) {
+//         const regex = /^(\S+)\s\/([^\/].+)\//; 
+//         const matchResult = line.match(regex);   
+
+//         if(matchResult) {
+//           const yomi = matchResult[1];
+//           const candidates = matchResult[2].split('/');
+//           const entry = {
+//             'yomi': yomi,
+//             'candidates': candidates
+//           };
+//           batch.insert(entry);
+//           // batch.find({yomi: yomi}).upsert().update({$addToSet: {candidates: candidates}});
+//         }
+//       }
+//     });
+//     batch.execute((err, result) => {
+//       if(err) {
+//         return reject(err);
+//         // db.close();
+//         // process.exit();
+//       } else {
+//         return resolve(result);
+//         // db.close();
+//         // process.exit();
+//       } 
+//     });
+//   });
+// };
 
 MongoClient.connect(uri, (err, db) => {
   console.log(`connecting ${uri}`)
@@ -70,21 +109,39 @@ MongoClient.connect(uri, (err, db) => {
     } else {
       console.log('Entry removed');
       loadDictionary(collection, './resource/SKK-JISYO.L', (err, result) => {
-        if(err) {
-          db.close();
-          process.exit();
-        } else {
+        loadDictionary(collection, './resource/SKK-JISYO.drug', (err, result) => {
           loadDictionary(collection, './resource/SKK-JISYO.fullname', (err, result) => {
-            if(err) {
-              db.close();
-              process.exit();
-            } else {
-              db.close();
-              process.exit();
-            } 
+            loadDictionary(collection, './resource/SKK-JISYO.geo', (err, result) => {
+              loadDictionary(collection, './resource/SKK-JISYO.zipcode', (err, result) => {
+                loadDictionary(collection, './resource/SKK-JISYO.law', (err, result) => {
+                  loadDictionary(collection, './resource/SKK-JISYO.station', (err, result) => {
+                    loadDictionary(collection, './resource/SKK-JISYO.jinmei', (err, result) => {
+                      loadDictionary(collection, './resource/SKK-JISYO.medical', (err, result) => {
+                      });
+                    });
+                  });
+                });
+              });
+            });
           });
-        }
+        });
       });
+
+        // if(err) {
+        //   db.close();
+        //   process.exit();
+        // } else {
+        //   loadDictionary(collection, './resource/SKK-JISYO.fullname', (err, result) => {
+        //     if(err) {
+        //       db.close();
+        //       process.exit();
+        //     } else {
+        //       db.close();
+        //       process.exit();
+        //     } 
+        //   });
+        // }
+      // });
       // loadDictionary.load('./resource/SKK-JISYO.ML');
       // // loadDictionary.load('./resource/SKK-JISYO.S', callback);
       // loadDictionary.load('./resource/SKK-JISYO.M', callback);
@@ -102,6 +159,54 @@ MongoClient.connect(uri, (err, db) => {
       // loadDictionary.load('./resource/SKK-JISYO.JIS3_4', callback);
     }
   })
+
+  // Entry.remove({},(err) => {
+  //   if(err) {
+  //     throw new Error(err)
+  //   } else {
+  //     console.log('Entry removed');
+  //     console.log('loading L');
+  //     loadDictionary(collection, './resource/SKK-JISYO.L')
+  //       .then(result => {
+  //         console.log('loading fullname');
+  //         loadDictionary(collection, './resource/SKK-JISYO.zipcode')
+  //       })
+  //       .then(result => {
+  //         console.log('loading geo');
+  //         loadDictionary(collection, './resource/SKK-JISYO.geo')
+  //       })
+  //       .then(result => {
+  //         console.log('loading zipcode');
+  //         loadDictionary(collection, './resource/SKK-JISYO.fullname')
+  //       })
+  //       .then(result => {
+  //         console.log('loading drug');
+  //         loadDictionary(collection, './resource/SKK-JISYO.station')
+  //       })
+  //       .then(result => {
+  //         console.log('loading law');
+  //         loadDictionary(collection, './resource/SKK-JISYO.law')
+  //       })
+  //       .then(result => {
+  //         console.log('loading law');
+  //         loadDictionary(collection, './resource/SKK-JISYO.drug')
+  //       })
+  //       .then(result => {
+  //         console.log('loading law');
+  //         loadDictionary(collection, './resource/SKK-JISYO.drug')
+  //       })
+  //       .then(result => {
+  //         console.log('load finished')
+  //         // db.close();
+  //         // process.exit();
+  //       })
+  //       .catch(err => {
+  //         console.log(err)
+  //         // db.close();
+  //         // process.exit();
+  //       })
+  //   }
+  // });
 });
 
 process.on('SIGINT', () =>  {

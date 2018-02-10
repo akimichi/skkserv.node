@@ -13,7 +13,7 @@ describe("'Cont' monad module", () => {
       expect(
         succCPS(Cont.stop)(4)
       ).to.eql(
-        16 
+        5
       );
       next();
     });

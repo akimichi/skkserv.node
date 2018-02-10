@@ -52,7 +52,8 @@ describe('インタープリター', () => {
     });
   });
   describe('listの評価', () => {
-    it('リスト評価のテスト', (next) => {
+    it('リスト評価のテスト', function(next) {
+      this.timeout('5s');
       Either.match(Interpreter.run("'(1 2 3)")(emptyEnv),{
         right: (list) => {
            List.match(list, {

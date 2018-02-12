@@ -964,25 +964,25 @@ describe('パーサーコンビネーター', () => {
         })
         next();
       });
-      // it("if式をexpressionでパースする", function(next){
-      //   this.timeout('5s');
-      //   Exp.match(Pair.left(
-      //     List.head(
-      //       Parser.parse(
-      //         Parser.expression
-      //       )(List.fromString("(if #t 1 2)"))
-      //     )
-      //   ),{
-      //     ifExpr: (predicate, consequent, alternative) => {
-      //       Exp.match(predicate, {
-      //         atom: (value) => {
-      //           expect(value).to.eql(true)
-      //         }
-      //       })
-      //     }
-      //   })
-      //   next();
-      // });
+      it("if式をexpressionでパースする", function(next){
+        this.timeout('5s');
+        Exp.match(Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.expression
+            )(List.fromString("(if #t 1 2)"))
+          )
+        ),{
+          ifExpr: (predicate, consequent, alternative) => {
+            Exp.match(predicate, {
+              atom: (value) => {
+                expect(value).to.eql(true)
+              }
+            })
+          }
+        })
+        next();
+      });
     });
     describe("リストをパースする",  ()  =>{
       it("list", function (next) {

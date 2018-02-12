@@ -114,19 +114,19 @@ describe('インタープリター', () => {
       next();
     });
   });
-  // describe('条件式の評価', () => {
-  //   it('ifExpr評価のテスト', (next) => {
-  //     Either.match(Interpreter.run("(if #t 1 2)")(emptyEnv),{
-  //       right: (value) => {
-  //         expect(value).to.eql(0)
-  //       },
-  //       left: (value) => {
-  //         expect().fail()
-  //       },
-  //     });
-  //     next();
-  //   });
-  // });
+  describe('条件式の評価', () => {
+    it('ifExpr評価のテスト', (next) => {
+      Either.match(Interpreter.run("(if #t 1 2)")(emptyEnv),{
+        right: (value) => {
+          expect(value).to.eql(1)
+        },
+        left: (value) => {
+          expect().fail()
+        },
+      });
+      next();
+    });
+  });
   describe('関数適用の評価', () => {
     const preludeEnv = Env.prelude(Env.empty);
 

@@ -50,8 +50,8 @@ EntrySchema.statics.runLisp = function (yomi, callback) {
     right: (value) => {
       callback(null, value);
     },
-    left: (message) => {
-      callback(message);
+    left: (errMessage) => {
+      callback(errMessage);
     },
   });
   // Either.match(Interpreter.run(yomi)(preludeEnv),{

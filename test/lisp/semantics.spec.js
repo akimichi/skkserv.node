@@ -139,8 +139,8 @@ describe('式の評価', () => {
       });
       next();
     });
-    it('negateのテスト', (next) => {
-      Either.match(evaluate(Exp.negate(Exp.atom(false)), Env.emptyEnv),{
+    it('notのテスト', (next) => {
+      Either.match(evaluate(Exp.not(Exp.atom(false)), Env.emptyEnv),{
         right: (value) => {
           expect(value).to.eql(true)
         },

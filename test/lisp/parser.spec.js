@@ -86,25 +86,6 @@ describe('パーサーコンビネーター', () => {
       });
     });
     describe("flatMap", (next) => {
-      // it("flatMapの単純な使用", (next) => {
-      //   var input = List.fromString("  +  ");
-      //   var add_or_subtract = Parser.alt(Parser.symbol(List.fromString("+")), Parser.symbol(List.fromString("-")));
-      //   var parser = Parser.flatMap(add_or_subtract)((operator) => {
-      //     return Parser.pure(operator);
-      //   });
-      //   expect(
-      //     // PP.print(
-      //     List.toArray(
-      //       List.head(
-      //         Parser.parse(parser)(input)
-      //       )
-      //     )
-      //   ).to.eql(
-      //     ['+']
-      //     // '[(+,[]),nil]'
-      //   );
-      //   next();
-      // });
       it("flatMapを組み合わせる", (next) => {
         var input = List.fromString("abcdef");
         var three = Parser.flatMap(Parser.item)((x) => {
@@ -200,15 +181,6 @@ describe('パーサーコンビネーター', () => {
         ).to.eql(
           ['2','3'] //   '[(1,[2,3,nil]),nil]'
         );
-        // expect(
-        //   List.head(
-        //     Parser.parse(
-        //       Parser.digit
-        //     )(List.fromString(" "))
-        //   )
-        // ).to.eql(
-        //   '1' //   '[(1,[2,3,nil]),nil]'
-        // );
         next();
       });
       it("letter", (next) => {
@@ -785,34 +757,34 @@ describe('パーサーコンビネーター', () => {
     it("expression", function(next){
       this.timeout('5s');
       Exp.match(Pair.left(
-            List.head(
-              Parser.parse(
-                Parser.expression
-                )(List.fromString("#t"))
-              )
-            ),{
+        List.head(
+          Parser.parse(
+            Parser.expression
+          )(List.fromString("#t"))
+        )
+      ),{
         atom: (value) => {
           expect(value).to.eql(true)
         },
       })
       Exp.match(Pair.left(
-            List.head(
-              Parser.parse(
-                Parser.expression
-                )(List.fromString("123"))
-              )
-            ),{
+        List.head(
+          Parser.parse(
+            Parser.expression
+          )(List.fromString("123"))
+        )
+      ),{
         atom: (value) => {
           expect(value).to.eql(123)
         },
       })
       Exp.match(Pair.left(
-            List.head(
-              Parser.parse(
-                Parser.expression
-                )(List.fromString("-123"))
-              )
-            ),{
+        List.head(
+          Parser.parse(
+            Parser.expression
+          )(List.fromString("-123"))
+        )
+      ),{
         atom: (value) => {
           expect(value).to.eql(-123)
         },
@@ -981,6 +953,46 @@ describe('パーサーコンビネーター', () => {
             })
           }
         })
+        next();
+      });
+    });
+    describe("演算子をパースする",  ()  =>{
+      it("論理演算子をパースする", function(next){
+        this.timeout('5s');
+        Exp.match(Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.expression
+            )(List.fromString("(not #t)"))
+          )
+        ),{
+          app: (operator, operand) => {
+            Exp.match(operator, {
+              variable: (value) => {
+                expect(value).to.eql("not")
+              }
+            })
+          }
+        });
+        Exp.match(Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.app
+            )(List.fromString("(and #t #f)"))
+          )
+        ),{
+          app: (operator, operand) => {
+            Exp.match(operator,{
+              app: (operator, operand) => {
+                Exp.match(operator, {
+                  variable: (name) => {
+                    expect(name).to.eql("and")
+                  }
+                });
+              }
+            });
+          }
+        });
         next();
       });
     });

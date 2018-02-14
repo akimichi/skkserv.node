@@ -118,7 +118,6 @@ describe('式の評価', () => {
   });
   describe('ブール演算のテスト', () => {
     it('andのテスト', (next) => {
-      // Either.match(evaluate(Exp.and(Exp.bool(true),Exp.bool(true)), Env.emptyEnv),{
       Either.match(evaluate(Exp.and(Exp.atom(true),Exp.atom(true)), Env.emptyEnv),{
         right: (value) => {
           expect(value).to.eql(true)
@@ -127,17 +126,9 @@ describe('式の評価', () => {
           expect().to.fail()
         }
       });
-      // expect(
-      //   evaluate(Exp.and(
-      //     Exp.bool(true),Exp.bool(true)
-      //   ), Env.empty)
-      // ).to.eql(
-      //   M.unit(true)
-      // );
       next();
     });
     it('orのテスト', (next) => {
-      // Either.match(evaluate(Exp.or(Exp.bool(false),Exp.bool(false)), Env.emptyEnv),{
       Either.match(evaluate(Exp.or(Exp.atom(false),Exp.atom(false)), Env.emptyEnv),{
         right: (value) => {
           expect(value).to.eql(false)
@@ -146,13 +137,17 @@ describe('式の評価', () => {
           expect().to.fail()
         }
       });
-      // expect(
-      //   evaluate(Exp.or(
-      //     Exp.bool(false),Exp.bool(false)
-      //   ), Env.empty)
-      // ).to.eql(
-      //   M.unit(false)
-      // );
+      next();
+    });
+    it('negateのテスト', (next) => {
+      Either.match(evaluate(Exp.negate(Exp.atom(false)), Env.emptyEnv),{
+        right: (value) => {
+          expect(value).to.eql(true)
+        },
+        left: (value) => {
+          expect().to.fail()
+        }
+      });
       next();
     });
   });

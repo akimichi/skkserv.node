@@ -794,14 +794,25 @@ describe('パーサーコンビネーター', () => {
     it("variable", function(next){
       this.timeout('5s');
       Exp.match(Pair.left(
-            List.head(
-              Parser.parse(
-                Parser.variable
-                )(List.fromString("xyz"))
-              )
-            ),{
+        List.head(
+          Parser.parse(
+            Parser.variable
+          )(List.fromString("xyz"))
+        )
+      ),{
         variable: (value) => {
           expect(value).to.eql("xyz")
+        }
+      })
+      Exp.match(Pair.left(
+        List.head(
+          Parser.parse(
+            Parser.variable
+          )(List.fromString("dash-included"))
+        )
+      ),{
+        variable: (value) => {
+          expect(value).to.eql("dash-included")
         }
       })
       next();

@@ -127,6 +127,37 @@ describe('インタープリター', () => {
       next();
     });
   });
+  describe('演算子の評価', () => {
+    const preludeEnv = Env.prelude(Env.empty);
+    it('論理演算子の評価', function(next) {
+      this.timeout('5s');
+      Either.match(Interpreter.run("(not #t)")(preludeEnv),{
+        right: (value) => {
+          expect(value).to.eql(false)
+        },
+        left: (value) => {
+          expect().fail()
+        },
+      });
+      Either.match(Interpreter.run("(and #f #f)")(preludeEnv),{
+        right: (value) => {
+          expect(value).to.eql(false)
+        },
+        left: (value) => {
+          expect().fail()
+        },
+      });
+      Either.match(Interpreter.run("(and (or #f #f) (not #f))")(preludeEnv),{
+        right: (value) => {
+          expect(value).to.eql(false)
+        },
+        left: (value) => {
+          expect().fail()
+        },
+      });
+      next();
+    });
+  });
   describe('関数適用の評価', () => {
     const preludeEnv = Env.prelude(Env.empty);
 

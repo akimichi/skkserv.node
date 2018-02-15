@@ -162,13 +162,6 @@ describe('式の評価', () => {
           expect().to.fail()
         }
       });
-      // expect(
-      //   evaluate(Exp.add(
-      //       Exp.num(0),Exp.num(1)
-      //   ), Env.empty)
-      // ).to.eql(
-      //   M.unit(1)
-      // );
       next();
     });
   });

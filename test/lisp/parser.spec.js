@@ -858,12 +858,12 @@ describe('パーサーコンビネーター', () => {
     it("lambda", function(next){
       this.timeout('5s');
       Exp.match(Pair.left(
-            List.head(
-              Parser.parse(
-                Parser.lambda
-                )(List.fromString("(lambda (x) x)"))
-              )
-            ),{
+        List.head(
+          Parser.parse(
+            Parser.lambda
+          )(List.fromString("(lambda (x) x)"))
+        )
+      ),{
         lambda: (variable, bodyExpression) => {
           Exp.match(variable, {
             variable: (name) => {
@@ -891,7 +891,7 @@ describe('パーサーコンビネーター', () => {
             }
           })
           Exp.match(bodyExpression, {
-          app: (operator, operands) => {
+            app: (operator, operands) => {
               Exp.match(operator, {
                 variable: (name) => {
                   expect(name).to.eql("succ")

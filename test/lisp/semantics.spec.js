@@ -212,7 +212,8 @@ describe('式の評価', () => {
     });
   });
   describe("prelude環境を使った", () => {
-    it('(succ 2) のテスト', (next) => {
+    it('(succ 2) のテスト', function(next) {
+      this.timeout('5s');
       const succ = Exp.variable("succ");
       Either.match(evaluate(Exp.app(succ, Exp.atom(2)), Env.prelude(Env.emptyEnv)),{
         right: (value) => {
@@ -224,7 +225,8 @@ describe('式の評価', () => {
       });
       next();
     });
-    it('(+ 1 2) のテスト', (next) => {
+    it('(+ 1 2) のテスト', function(next) {
+      this.timeout('5s');
       const plus = Exp.variable("+");
       const expression = Exp.app(
         Exp.app(plus, Exp.atom(1)), 

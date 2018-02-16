@@ -927,6 +927,44 @@ describe('パーサーコンビネーター', () => {
       // })
       next();
     });
+    describe("lambda式をパースする",  ()  =>{
+      it("lambda式をlambdaでパースする", function(next){
+        Exp.match(Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.lambda
+            )(List.fromString("(lambda (n) n)"))
+          )
+        ),{
+          lambda: (arg, body) => {
+            Exp.match(arg, {
+              variable: (value) => {
+                expect(value).to.eql('n')
+              }
+            })
+          }
+        })
+        next();
+      });
+      it("lambda式をexpressionでパースする", function(next){
+        Exp.match(Pair.left(
+          List.head(
+            Parser.parse(
+              Parser.expression
+            )(List.fromString("(lambda (n) n)"))
+          )
+        ),{
+          lambda: (arg, body) => {
+            Exp.match(arg, {
+              variable: (value) => {
+                expect(value).to.eql('n')
+              }
+            })
+          }
+        })
+        next();
+      });
+    });
     describe("if式をパースする",  ()  =>{
       it("if式をifExprでパースする", function(next){
         this.timeout('5s');

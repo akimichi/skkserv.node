@@ -17,4 +17,19 @@ describe('式のテスト', () => {
       next();
     });
   });
+  describe('lambdaの式のテスト', () => {
+    it('lambdaの式を作る', (next) => {
+      const lambdaExpression = Exp.lambda(Exp.variable('x'), Exp.variable('x'));
+      Exp.match(lambdaExpression, {
+        lambda: (arg, body) => {
+          Exp.match(arg, {
+            variable: (name) => {
+              expect(name).to.eql('x');
+            }
+          })
+        }
+      });
+      next();
+    });
+  });
 });

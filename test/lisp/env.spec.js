@@ -38,7 +38,8 @@ describe('環境のテスト', () => {
     });
   });
   describe('prelude環境を使う', () => {
-    it('prelude環境から値を取り出す', (next) => {
+    it('prelude環境から値を取り出す', function(next) {
+      this.timeout('5s');
       Either.match(Env.lookup('succ', Env.prelude(emptyEnv)),{
         right: (value) => {
           expect(value).to.a("function")

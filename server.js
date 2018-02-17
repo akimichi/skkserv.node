@@ -3,18 +3,23 @@
 const mongoose = require('mongoose'),
   env = process.env.NODE_ENV,
   config = require('./lib/config.js')(env);
-  
-mongoose.Promise = require('bluebird');
-
-mongoose.connect(config.db.mongo.uri,  {
-  useMongoClient: true,
-  promiseLibrary: require('bluebird') 
-});
 
 const net = require('net');
 const skkService = require('./lib/service.js').skk;
 const server = net.createServer(skkService),
  port = config.port;
+
+mongoose.Promise = require('bluebird');
+mongoose.connect(config.db.mongo.uri,  {
+  useMongoClient: true,
+  promiseLibrary: require('bluebird') 
+});
+
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  console.log("Connection Successful!");
+});
 
 server.listen(port, '0.0.0.0', () => {
   const addr = server.address();

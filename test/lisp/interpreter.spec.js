@@ -157,7 +157,7 @@ describe('インタープリター', () => {
     describe('演算子の評価', () => {
       const preludeEnv = Env.prelude(Env.empty);
       it('論理演算子の評価', function(next) {
-        this.timeout('5s');
+        this.timeout('8s');
         Either.match(Interpreter.run("(not #t)")(preludeEnv),{
           right: (value) => {
             expect(value).to.eql(false)
@@ -177,6 +177,20 @@ describe('インタープリター', () => {
         Either.match(Interpreter.run("(and (or #f #f) (not #f))")(preludeEnv),{
           right: (value) => {
             expect(value).to.eql(false)
+          },
+          left: (value) => {
+            expect().fail()
+          },
+        });
+        next();
+      });
+    });
+    describe('算術演算子の評価', () => {
+      const preludeEnv = Env.prelude(Env.empty);
+      it('expt', (next) => {
+        Either.match(Interpreter.run("(expt 2 3)")(preludeEnv),{
+          right: (value) => {
+            expect(value).to.eql(8)
           },
           left: (value) => {
             expect().fail()

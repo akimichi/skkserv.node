@@ -9,11 +9,7 @@ const skkService = require('./lib/service.js').skk;
 const server = net.createServer(skkService),
  port = config.port;
 
-mongoose.Promise = require('bluebird');
-mongoose.connect(config.db.mongo.uri,  {
-  useMongoClient: true,
-  promiseLibrary: require('bluebird') 
-});
+mongoose.connect(config.db.mongo.uri);
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));

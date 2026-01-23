@@ -1,219 +1,94 @@
 'use strict';
 
 // Usage:
-// 
+//
 // $ NODE_ENV=development node bin/seed.js
 // $ NODE_ENV=test node bin/seed.js
-// 
+//
 
 const env = process.env.NODE_ENV,
  config = require('../lib/config.js')(env),
  uri = config.db.mongo.uri;
 
-// console.log(`mongodb uri: ${uri}`)
-// const loadDictionary = require('../lib/loadDictionary.js');
-
 const mongoose = require('mongoose');
-mongoose.Promise = require('bluebird');
-const options = { 
-  useMongoClient: true,
-  promiseLibrary: require('bluebird') 
-};
-const DB = mongoose.connect(
-  uri,
-  options
-);
-
-const MongoClient = require('mongodb').MongoClient;
-
+const { MongoClient } = require('mongodb');
 const Entry = require('../models/entry.js');
 
-const loadDictionary = (collection, path, callback) => {
+const loadDictionary = async (collection, path) => {
   const fs = require('fs'),
-    readline = require('readline'),
     iconvLite = require('iconv-lite');
-  return new Promise(function(resolve, reject) {
-    const batch = collection.initializeUnorderedBulkOp();
 
-    const content = fs.readFileSync(path);
-    const lines = iconvLite.decode(content, "EUC-JP").toString().split("\n");
-    lines.forEach((line) => {
-      if(/^;;.+$/.test(line) == false) {
-        const regex = /^(\S+)\s\/([^\/].+)\//; 
-        const matchResult = line.match(regex);   
+  const batch = collection.initializeUnorderedBulkOp();
 
-        if(matchResult) {
-          const yomi = matchResult[1];
-          const candidates = matchResult[2].split('/');
-          const entry = {
-            'yomi': yomi,
-            'candidates': candidates
-          };
-          batch.insert(entry);
-          // batch.find({yomi: yomi}).upsert().update({$addToSet: {candidates: candidates}});
-        }
+  const content = fs.readFileSync(path);
+  const lines = iconvLite.decode(content, "EUC-JP").toString().split("\n");
+  lines.forEach((line) => {
+    if(/^;;.+$/.test(line) == false) {
+      const regex = /^(\S+)\s\/([^\/].+)\//;
+      const matchResult = line.match(regex);
+
+      if(matchResult) {
+        const yomi = matchResult[1];
+        const candidates = matchResult[2].split('/');
+        const entry = {
+          'yomi': yomi,
+          'candidates': candidates
+        };
+        batch.insert(entry);
       }
-    });
-    batch.execute(callback);
+    }
   });
+  return batch.execute();
 };
-// const loadDictionary = (collection, path) => {
-//   const fs = require('fs'),
-//     readline = require('readline'),
-//     iconvLite = require('iconv-lite');
-//   return new Promise(function(resolve, reject) {
-//     const batch = collection.initializeUnorderedBulkOp();
 
-//     const content = fs.readFileSync(path);
-//     const lines = iconvLite.decode(content, "EUC-JP").toString().split("\n");
-//     lines.forEach((line) => {
-//       if(/^;;.+$/.test(line) == false) {
-//         const regex = /^(\S+)\s\/([^\/].+)\//; 
-//         const matchResult = line.match(regex);   
+const dictionaryFiles = [
+  './resource/SKK-JISYO.L',
+  './resource/SKK-JISYO.drug',
+  './resource/SKK-JISYO.fullname',
+  './resource/SKK-JISYO.geo',
+  './resource/SKK-JISYO.zipcode',
+  './resource/SKK-JISYO.law',
+  './resource/SKK-JISYO.station',
+  './resource/SKK-JISYO.jinmei',
+  './resource/SKK-JISYO.medical',
+];
 
-//         if(matchResult) {
-//           const yomi = matchResult[1];
-//           const candidates = matchResult[2].split('/');
-//           const entry = {
-//             'yomi': yomi,
-//             'candidates': candidates
-//           };
-//           batch.insert(entry);
-//           // batch.find({yomi: yomi}).upsert().update({$addToSet: {candidates: candidates}});
-//         }
-//       }
-//     });
-//     batch.execute((err, result) => {
-//       if(err) {
-//         return reject(err);
-//         // db.close();
-//         // process.exit();
-//       } else {
-//         return resolve(result);
-//         // db.close();
-//         // process.exit();
-//       } 
-//     });
-//   });
-// };
+const main = async () => {
+  console.log(`connecting ${uri}`);
 
-MongoClient.connect(uri, (err, db) => {
-  console.log(`connecting ${uri}`)
-  if (err) return console.error(err);
+  // mongoose接続
+  await mongoose.connect(uri);
+
+  // MongoClient接続
+  const client = await MongoClient.connect(uri);
+  const db = client.db();
   const collection = db.collection('entries');
 
-  // あらかじめデータを消去しておく
-  Entry.remove({},(err) => {
-    if(err) {
-      throw new Error(err)
-    } else {
-      console.log('Entry removed');
-      loadDictionary(collection, './resource/SKK-JISYO.L', (err, result) => {
-        loadDictionary(collection, './resource/SKK-JISYO.drug', (err, result) => {
-          loadDictionary(collection, './resource/SKK-JISYO.fullname', (err, result) => {
-            loadDictionary(collection, './resource/SKK-JISYO.geo', (err, result) => {
-              loadDictionary(collection, './resource/SKK-JISYO.zipcode', (err, result) => {
-                loadDictionary(collection, './resource/SKK-JISYO.law', (err, result) => {
-                  loadDictionary(collection, './resource/SKK-JISYO.station', (err, result) => {
-                    loadDictionary(collection, './resource/SKK-JISYO.jinmei', (err, result) => {
-                      loadDictionary(collection, './resource/SKK-JISYO.medical', (err, result) => {
-                      });
-                    });
-                  });
-                });
-              });
-            });
-          });
-        });
-      });
+  // データを消去
+  await Entry.deleteMany({});
+  console.log('Entry removed');
 
-        // if(err) {
-        //   db.close();
-        //   process.exit();
-        // } else {
-        //   loadDictionary(collection, './resource/SKK-JISYO.fullname', (err, result) => {
-        //     if(err) {
-        //       db.close();
-        //       process.exit();
-        //     } else {
-        //       db.close();
-        //       process.exit();
-        //     } 
-        //   });
-        // }
-      // });
-      // loadDictionary.load('./resource/SKK-JISYO.ML');
-      // // loadDictionary.load('./resource/SKK-JISYO.S', callback);
-      // loadDictionary.load('./resource/SKK-JISYO.M', callback);
-      // loadDictionary.load('./resource/SKK-JISYO.fullname');
-      // loadDictionary.load('./resource/SKK-JISYO.jinmei');
-      // loadDictionary.load('./resource/SKK-JISYO.propernoun', callback);
-      // loadDictionary.load('./resource/SKK-JISYO.geo');
-      // loadDictionary.load('./resource/SKK-JISYO.station');
-      // loadDictionary.load('./resource/SKK-JISYO.zipcode');
-      // loadDictionary.load('./resource/SKK-JISYO.mazegaki', callback);
-      // loadDictionary.load('./resource/SKK-JISYO.law');
-      // // loadDictionary.load('./resource/SKK-JISYO.lisp', callback);
-      // // loadDictionary.load('./resource/SKK-JISYO.JIS2', callback);
-      // // loadDictionary.load('./resource/SKK-JISYO.JIS2004', callback);
-      // loadDictionary.load('./resource/SKK-JISYO.JIS3_4', callback);
-    }
-  })
+  // 辞書を順次読み込み
+  for (const path of dictionaryFiles) {
+    console.log(`loading ${path}`);
+    await loadDictionary(collection, path);
+  }
 
-  // Entry.remove({},(err) => {
-  //   if(err) {
-  //     throw new Error(err)
-  //   } else {
-  //     console.log('Entry removed');
-  //     console.log('loading L');
-  //     loadDictionary(collection, './resource/SKK-JISYO.L')
-  //       .then(result => {
-  //         console.log('loading fullname');
-  //         loadDictionary(collection, './resource/SKK-JISYO.zipcode')
-  //       })
-  //       .then(result => {
-  //         console.log('loading geo');
-  //         loadDictionary(collection, './resource/SKK-JISYO.geo')
-  //       })
-  //       .then(result => {
-  //         console.log('loading zipcode');
-  //         loadDictionary(collection, './resource/SKK-JISYO.fullname')
-  //       })
-  //       .then(result => {
-  //         console.log('loading drug');
-  //         loadDictionary(collection, './resource/SKK-JISYO.station')
-  //       })
-  //       .then(result => {
-  //         console.log('loading law');
-  //         loadDictionary(collection, './resource/SKK-JISYO.law')
-  //       })
-  //       .then(result => {
-  //         console.log('loading law');
-  //         loadDictionary(collection, './resource/SKK-JISYO.drug')
-  //       })
-  //       .then(result => {
-  //         console.log('loading law');
-  //         loadDictionary(collection, './resource/SKK-JISYO.drug')
-  //       })
-  //       .then(result => {
-  //         console.log('load finished')
-  //         // db.close();
-  //         // process.exit();
-  //       })
-  //       .catch(err => {
-  //         console.log(err)
-  //         // db.close();
-  //         // process.exit();
-  //       })
-  //   }
-  // });
+  console.log('load finished');
+
+  await client.close();
+  await mongoose.connection.close();
+  console.log('Connection closed');
+  process.exit(0);
+};
+
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
 });
 
-process.on('SIGINT', () =>  {
-  mongoose.connection.close(() => {
-    console.log('Mongoose disconnected through app termination');
-    process.exit(0);
-  });
+process.on('SIGINT', async () => {
+  await mongoose.connection.close();
+  console.log('Mongoose disconnected through app termination');
+  process.exit(0);
 });
-
-

@@ -1,42 +1,31 @@
 'use strict';
 
 const mongoose = require('mongoose');
-mongoose.Promise = require('bluebird');
 const env = process.env.NODE_ENV || 'test',
   config = require('../lib/config.js')(env),
   uri = config.db.mongo.uri;
 
 console.log(config)
 
-before(function (done) {
+before(async function () {
   this.timeout('15s');
-  const clearDB = () =>  {
-    for (var i in mongoose.connection.collections) {
-      mongoose.connection.collections[i].remove(() => {
-      });
+
+  const clearDB = async () => {
+    for (const name in mongoose.connection.collections) {
+      await mongoose.connection.collections[name].deleteMany({});
     }
-    // return done();
-  }
+  };
 
   if (mongoose.connection.readyState === 0) {
-    const options = { 
-      useMongoClient: true,
-      promiseLibrary: require('bluebird') 
-    };
-    mongoose.connect(uri, options, (err) => {
-      if (err) {
-        throw err;
-      }
-      return clearDB();
+    await mongoose.connect(uri, {
+      serverSelectionTimeoutMS: 5000,
+      connectTimeoutMS: 5000,
     });
-  } else {
-    return clearDB();
   }
-  done();
+  await clearDB();
 });
 
 
-after((done) => {
-  mongoose.disconnect();
-  return done();
+after(async () => {
+  await mongoose.disconnect();
 });

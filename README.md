@@ -4,8 +4,9 @@ skkserv.node
 ## 概要
 
 node.jsで書かれたskkサーバーである。
-内部にlisp評価器を含む。
 
+- バックエンドDBは、mongodb
+- lisp式の評価が可能
 
 
 ## test

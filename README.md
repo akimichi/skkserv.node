@@ -6,16 +6,13 @@ skkserv.node
 node.jsで書かれたskkサーバーである。
 
 - バックエンドDBは、mongodb
-- lisp式の評価が可能
+- lisp式の評価が可能(experimental)
 
+## 事前準備
 
-## test
+1. mongodbサーバーを準備する
+1. .env を作成し、MONGODB_URI を設定する
 
-
-~~~
-$ nvm use
-$ npm test
-~~~
 
 ## production 
 
@@ -25,9 +22,11 @@ $ npm run start
 ~~~
 
 
-## seed
+## test
 
 ~~~
-$ NODE_DEV=development node bin/seed.js
+$ nvm use
+$ npm test
 ~~~
+
 

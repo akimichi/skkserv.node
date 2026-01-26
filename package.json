@@ -14,7 +14,7 @@
     "skkserv"
   ],
   "author": "Akimichi Tatsukawa",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "expect.js": "0.3.1",
     "mocha": "3.4.2",

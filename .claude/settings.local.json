@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm test:*)",
+      "Bash(wc:*)",
+      "Bash(NODE_ENV=test npx mocha:*)"
+    ]
+  }
+}

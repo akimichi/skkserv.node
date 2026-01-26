@@ -164,6 +164,105 @@ describe('式の評価', () => {
       });
       next();
     });
+    it('subtractのテスト', (next) => {
+      Either.match(evaluate(Exp.subtract(Exp.atom(5), Exp.atom(3)), Env.emptyEnv), {
+        right: (value) => {
+          expect(value).to.eql(2)
+        },
+        left: (value) => {
+          expect().to.fail()
+        }
+      });
+      next();
+    });
+    it('subtractで負の結果', (next) => {
+      Either.match(evaluate(Exp.subtract(Exp.atom(3), Exp.atom(5)), Env.emptyEnv), {
+        right: (value) => {
+          expect(value).to.eql(-2)
+        },
+        left: (value) => {
+          expect().to.fail()
+        }
+      });
+      next();
+    });
+    it('multiplyのテスト', (next) => {
+      Either.match(evaluate(Exp.multiply(Exp.atom(3), Exp.atom(4)), Env.emptyEnv), {
+        right: (value) => {
+          expect(value).to.eql(12)
+        },
+        left: (value) => {
+          expect().to.fail()
+        }
+      });
+      next();
+    });
+    it('multiplyでゼロ', (next) => {
+      Either.match(evaluate(Exp.multiply(Exp.atom(0), Exp.atom(100)), Env.emptyEnv), {
+        right: (value) => {
+          expect(value).to.eql(0)
+        },
+        left: (value) => {
+          expect().to.fail()
+        }
+      });
+      next();
+    });
+    it('divideのテスト', (next) => {
+      Either.match(evaluate(Exp.divide(Exp.atom(10), Exp.atom(2)), Env.emptyEnv), {
+        right: (value) => {
+          expect(value).to.eql(5)
+        },
+        left: (value) => {
+          expect().to.fail()
+        }
+      });
+      next();
+    });
+    it('divideで浮動小数点結果', (next) => {
+      Either.match(evaluate(Exp.divide(Exp.atom(7), Exp.atom(2)), Env.emptyEnv), {
+        right: (value) => {
+          expect(value).to.eql(3.5)
+        },
+        left: (value) => {
+          expect().to.fail()
+        }
+      });
+      next();
+    });
+    it('divideでゼロ除算', (next) => {
+      Either.match(evaluate(Exp.divide(Exp.atom(1), Exp.atom(0)), Env.emptyEnv), {
+        right: (value) => {
+          expect(value).to.eql(Infinity)
+        },
+        left: (value) => {
+          expect().to.fail()
+        }
+      });
+      next();
+    });
+    it('exptのテスト', (next) => {
+      Either.match(evaluate(Exp.expt(Exp.atom(2), Exp.atom(3)), Env.emptyEnv), {
+        right: (value) => {
+          expect(value).to.eql(8)
+        },
+        left: (value) => {
+          expect().to.fail()
+        }
+      });
+      next();
+    });
+    it('exptでゼロ乗', (next) => {
+      Either.match(evaluate(Exp.expt(Exp.atom(5), Exp.atom(0)), Env.emptyEnv), {
+        right: (value) => {
+          expect(value).to.eql(1)
+        },
+        left: (value) => {
+          expect().to.fail()
+        }
+      });
+      next();
+    });
   });
   describe('関数適用のテスト', () => {
     it('id(1)のテスト', (next) => {
@@ -268,5 +367,83 @@ describe('式の評価', () => {
       }
     });
     next();
+  });
+  describe('isEqualのテスト', () => {
+    it('数値が等しい場合', (next) => {
+      Either.match(evaluate(Exp.isEqual(Exp.atom(1), Exp.atom(1)), Env.emptyEnv), {
+        right: (value) => {
+          expect(value).to.eql(true)
+        },
+        left: (value) => {
+          expect().to.fail()
+        }
+      });
+      next();
+    });
+    it('数値が等しくない場合', (next) => {
+      Either.match(evaluate(Exp.isEqual(Exp.atom(1), Exp.atom(2)), Env.emptyEnv), {
+        right: (value) => {
+          expect(value).to.eql(false)
+        },
+        left: (value) => {
+          expect().to.fail()
+        }
+      });
+      next();
+    });
+    it('文字列が等しい場合', (next) => {
+      Either.match(evaluate(Exp.isEqual(Exp.atom("abc"), Exp.atom("abc")), Env.emptyEnv), {
+        right: (value) => {
+          expect(value).to.eql(true)
+        },
+        left: (value) => {
+          expect().to.fail()
+        }
+      });
+      next();
+    });
+    it('ブール値の比較', (next) => {
+      Either.match(evaluate(Exp.isEqual(Exp.atom(true), Exp.atom(false)), Env.emptyEnv), {
+        right: (value) => {
+          expect(value).to.eql(false)
+        },
+        left: (value) => {
+          expect().to.fail()
+        }
+      });
+      next();
+    });
+  });
+  describe('日時関数のテスト', () => {
+    it('today_のテスト', function(next) {
+      this.timeout('5s');
+      Either.match(evaluate(Exp.today_(Exp.atom(undefined)), Env.emptyEnv), {
+        right: (value) => {
+          expect(value).to.be.an('array');
+          expect(value.length).to.eql(2);
+          // ISO形式: YYYY-MM-DD
+          expect(value[0]).to.match(/^\d{4}-\d{2}-\d{2}$/);
+          // 日本形式: YYYY年MM月DD日
+          expect(value[1]).to.match(/^\d{4}年\d{2}月\d{2}日$/);
+        },
+        left: (value) => {
+          expect().to.fail()
+        }
+      });
+      next();
+    });
+    it('now_のテスト', function(next) {
+      this.timeout('5s');
+      Either.match(evaluate(Exp.now_(Exp.atom(undefined)), Env.emptyEnv), {
+        right: (value) => {
+          expect(value).to.be.a('string');
+          expect(value.length).to.be.greaterThan(0);
+        },
+        left: (value) => {
+          expect().to.fail()
+        }
+      });
+      next();
+    });
   });
 });

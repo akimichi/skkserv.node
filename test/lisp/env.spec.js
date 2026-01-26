@@ -37,6 +37,53 @@ describe('環境のテスト', () => {
       next();
     });
   });
+  describe('extendの詳細テスト', () => {
+    it('複数変数の連鎖追加', (next) => {
+      const env1 = Env.extend('a', 1)(Env.empty);
+      const env2 = Env.extend('b', 2)(env1);
+      const env3 = Env.extend('c', 3)(env2);
+
+      Either.match(Env.lookup('a', env3), {
+        right: (value) => {
+          expect(value).to.eql(1)
+        },
+        left: (value) => {
+          expect().fail()
+        },
+      });
+      Either.match(Env.lookup('b', env3), {
+        right: (value) => {
+          expect(value).to.eql(2)
+        },
+        left: (value) => {
+          expect().fail()
+        },
+      });
+      Either.match(Env.lookup('c', env3), {
+        right: (value) => {
+          expect(value).to.eql(3)
+        },
+        left: (value) => {
+          expect().fail()
+        },
+      });
+      next();
+    });
+    it('同名変数の上書き（シャドウイング）', (next) => {
+      const env1 = Env.extend('x', 1)(Env.empty);
+      const env2 = Env.extend('x', 100)(env1);
+
+      Either.match(Env.lookup('x', env2), {
+        right: (value) => {
+          expect(value).to.eql(100)
+        },
+        left: (value) => {
+          expect().fail()
+        },
+      });
+      next();
+    });
+  });
   describe('prelude環境を使う', () => {
     it('prelude環境から値を取り出す', function(next) {
       this.timeout('5s');
@@ -73,6 +120,66 @@ describe('環境のテスト', () => {
       //     expect().fail()
       //   },
       // });
+      next();
+    });
+    it('算術演算子が存在する', function(next) {
+      this.timeout('5s');
+      const prelude = Env.prelude(Env.empty);
+      ['+', '-', '*', '/', 'expt'].forEach(op => {
+        Either.match(Env.lookup(op, prelude), {
+          right: (value) => {
+            expect(value).to.be.a('function')
+          },
+          left: (value) => {
+            expect().fail()
+          },
+        });
+      });
+      next();
+    });
+    it('論理演算子が存在する', function(next) {
+      this.timeout('5s');
+      const prelude = Env.prelude(Env.empty);
+      ['not', 'and', 'or'].forEach(op => {
+        Either.match(Env.lookup(op, prelude), {
+          right: (value) => {
+            expect(value).to.be.a('function')
+          },
+          left: (value) => {
+            expect().fail()
+          },
+        });
+      });
+      next();
+    });
+    it('日時関数が存在する', function(next) {
+      this.timeout('5s');
+      const prelude = Env.prelude(Env.empty);
+      ['today!', 'now!'].forEach(op => {
+        Either.match(Env.lookup(op, prelude), {
+          right: (value) => {
+            expect(value).to.be.a('function')
+          },
+          left: (value) => {
+            expect().fail()
+          },
+        });
+      });
+      next();
+    });
+    it('ユーティリティ関数が存在する', function(next) {
+      this.timeout('5s');
+      const prelude = Env.prelude(Env.empty);
+      ['BMI', 'CaloricNeeds', 'cons'].forEach(op => {
+        Either.match(Env.lookup(op, prelude), {
+          right: (value) => {
+            expect(value).to.be.a('function')
+          },
+          left: (value) => {
+            expect().fail()
+          },
+        });
+      });
       next();
     });
   });

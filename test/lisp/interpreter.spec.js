@@ -198,6 +198,96 @@ describe('インタープリター', () => {
         });
         next();
       });
+      it('引き算の評価', function(next) {
+        this.timeout('5s');
+        Either.match(Interpreter.run("(- 10 3)")(preludeEnv), {
+          right: (value) => {
+            expect(value).to.eql(7)
+          },
+          left: (value) => {
+            expect().fail()
+          },
+        });
+        next();
+      });
+      it('掛け算の評価', function(next) {
+        this.timeout('5s');
+        Either.match(Interpreter.run("(* 4 5)")(preludeEnv), {
+          right: (value) => {
+            expect(value).to.eql(20)
+          },
+          left: (value) => {
+            expect().fail()
+          },
+        });
+        next();
+      });
+      it('割り算の評価', function(next) {
+        this.timeout('5s');
+        Either.match(Interpreter.run("(/ 20 4)")(preludeEnv), {
+          right: (value) => {
+            expect(value).to.eql(5)
+          },
+          left: (value) => {
+            expect().fail()
+          },
+        });
+        next();
+      });
+      it('ネストした算術演算', function(next) {
+        this.timeout('5s');
+        Either.match(Interpreter.run("(+ (* 2 3) (/ 10 2))")(preludeEnv), {
+          right: (value) => {
+            expect(value).to.eql(11)
+          },
+          left: (value) => {
+            expect().fail()
+          },
+        });
+        next();
+      });
+      it('CaloricNeedsの評価', function(next) {
+        this.timeout('5s');
+        // CaloricNeeds(height) = height^2 * 22 * 25
+        // 1.7^2 * 22 * 25 = 2.89 * 550 = 1589.5
+        Either.match(Interpreter.run("(CaloricNeeds 1.7)")(preludeEnv), {
+          right: (value) => {
+            expect(value).to.be.within(1589, 1590)
+          },
+          left: (value) => {
+            expect().fail()
+          },
+        });
+        next();
+      });
+    });
+    describe('日時関数の評価', () => {
+      const preludeEnv = Env.prelude(Env.empty);
+      it('today!の評価', function(next) {
+        this.timeout('5s');
+        Either.match(Interpreter.run("(today!)")(preludeEnv), {
+          right: (value) => {
+            expect(value).to.be.an('array');
+            expect(value.length).to.eql(2);
+          },
+          left: (value) => {
+            expect().fail()
+          },
+        });
+        next();
+      });
+      it('now!の評価', function(next) {
+        this.timeout('5s');
+        Either.match(Interpreter.run("(now!)")(preludeEnv), {
+          right: (value) => {
+            expect(value).to.be.a('string');
+          },
+          left: (value) => {
+            expect().fail()
+          },
+        });
+        next();
+      });
     });
     describe('関数適用の評価', () => {
       const preludeEnv = Env.prelude(Env.empty);

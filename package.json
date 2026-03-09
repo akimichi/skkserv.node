@@ -6,9 +6,7 @@
   "scripts": {
     "test": "NODE_ENV=test mocha --recursive test",
     "start": "NODE_ENV=development node server.js",
-    "start-prod": "NODE_ENV=production node server.js",
-    "seed": "NODE_ENV=development node bin/seed.js",
-    "seed-prod": "NODE_ENV=production node bin/seed.js"
+    "start-prod": "NODE_ENV=production node server.js"
   },
   "keywords": [
     "skkserv"
@@ -21,13 +19,11 @@
     "should": "11.2.1"
   },
   "dependencies": {
-    "dotenv": "^16.0.0",
     "date-utils": "1.2.21",
     "iconv-lite": "0.4.18",
     "kansuu.js": "0.2.17",
     "mocha": "3.4.2",
     "moment": "^2.20.1",
-    "mongoose": "^7.0.0",
     "should": "11.2.1"
   }
 }

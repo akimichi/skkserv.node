@@ -3,7 +3,10 @@
     "allow": [
       "Bash(npm test:*)",
       "Bash(wc:*)",
-      "Bash(NODE_ENV=test npx mocha:*)"
+      "Bash(NODE_ENV=test npx mocha:*)",
+      "Bash(iconv:*)",
+      "Bash(ls:*)",
+      "Bash(grep:*)"
     ]
   }
 }

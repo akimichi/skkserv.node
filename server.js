@@ -1,25 +1,32 @@
 "use strict;"
 
-const mongoose = require('mongoose'),
-  env = process.env.NODE_ENV,
+const env = process.env.NODE_ENV,
   config = require('./lib/config.js')(env);
 
 const net = require('net');
+const dictionary = require('./lib/dictionary.js');
 const skkService = require('./lib/service.js').skk;
 const server = net.createServer(skkService),
- port = config.port;
+  port = config.port;
 
-mongoose.connect(config.db.mongo.uri);
+// 辞書ファイルのパスリスト
+const dictionaryFiles = [
+  './resource/SKK-JISYO.L',
+  './resource/SKK-JISYO.drug',
+  './resource/SKK-JISYO.fullname',
+  './resource/SKK-JISYO.geo',
+  './resource/SKK-JISYO.zipcode',
+  './resource/SKK-JISYO.law',
+  './resource/SKK-JISYO.station',
+  './resource/SKK-JISYO.jinmei',
+  './resource/SKK-JISYO.medical',
+];
 
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
-  console.log("Connection Successful!");
-});
+// 辞書を読み込み
+console.log('Loading dictionary files...');
+dictionary.load(dictionaryFiles);
 
 server.listen(port, '0.0.0.0', () => {
   const addr = server.address();
   console.log(`Listening Start on Server - ${addr.address}:${addr.port}`);
-  console.log(`MongoDB - ${config.db.mongo.uri} connected`);
 });
-

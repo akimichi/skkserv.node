@@ -1,9 +1,5 @@
-'use strict';
-
-const expect = require('expect.js'),
-  env = require('../../lib/lisp/env.js'),
-  ID = require('kansuu.js').monad.identity;
-const Exp = require('../../lib/lisp/exp.js');
+import expect = require('expect.js');
+import Exp = require('../../lib/lisp/exp');
 
 describe('式のテスト', () => {
   describe('数値の式のテスト', () => {

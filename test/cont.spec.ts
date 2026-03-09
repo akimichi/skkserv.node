@@ -1,15 +1,13 @@
-"use strict";
-
-const expect = require('expect.js'),
-  Cont = require('../lib/cont.js');
+import expect = require('expect.js');
+import Cont = require('../lib/cont');
 
 describe("'Cont' monad module", () => {
   describe("Cont#unit", () => {
     it('div', (next) => {
-      const succ = (n) => {
+      const succ = (n: number): number => {
         return n + 1;
       };
-      const succCPS =  Cont.unit(succ);
+      const succCPS = Cont.unit(succ);
       expect(
         succCPS(Cont.stop)(4)
       ).to.eql(
@@ -18,5 +16,4 @@ describe("'Cont' monad module", () => {
       next();
     });
   });
-
 });

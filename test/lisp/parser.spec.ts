@@ -1,15 +1,13 @@
-"use strict";
-
-const expect = require('expect.js'),
-  array = require('kansuu.js').array,
-  Pair = require('kansuu.js').pair,
-  List = require('kansuu.js').monad.list,
-  Exp = require('../../lib/lisp/exp.js'),
-  Parser = require('../../lib/lisp/parser.js');
+import expect = require('expect.js');
+const array = require('kansuu.js').array;
+const Pair = require('kansuu.js').pair;
+const List = require('kansuu.js').monad.list;
+import Exp = require('../../lib/lisp/exp');
+import Parser = require('../../lib/lisp/parser');
 
 describe('パーサーコンビネーター', () => {
   var abc = List.fromString("abc");
-  describe("Parserモナド", (next) => {
+  describe("Parserモナド", (next?: any) => {
     it("pure", (next) => {
       expect(
         List.toArray(
@@ -17,7 +15,7 @@ describe('パーサーコンビネーター', () => {
             Parser.parse(Parser.pure(1))(abc)
           ))
       ).to.eql(
-        ['1', 'a','b','c']
+        ['1', 'a', 'b', 'c']
       );
       expect(
         Pair.left(
@@ -33,7 +31,7 @@ describe('パーサーコンビネーター', () => {
             Parser.parse(Parser.pure(1))(abc)
           )))
       ).to.eql(
-        ['a','b','c']
+        ['a', 'b', 'c']
       );
       next();
     });
@@ -44,7 +42,7 @@ describe('パーサーコンビネーター', () => {
             Parser.parse(Parser.result(1))(abc)
           ))
       ).to.eql(
-        ['1', 'a','b','c']
+        ['1', 'a', 'b', 'c']
       );
       next();
     });
@@ -68,10 +66,10 @@ describe('パーサーコンビネーター', () => {
       );
       next();
     });
-    describe("fmap", (next) => {
+    describe("fmap", (next?: any) => {
       it("toUpper", (next) => {
         var input = List.fromString("abc");
-        var toUpper = (s) => {
+        var toUpper = (s: string) => {
           return s.toUpperCase();
         };
         expect(
@@ -80,18 +78,18 @@ describe('パーサーコンビネーター', () => {
               Parser.parse(Parser.fmap(toUpper)(Parser.item))(input)
             ))
         ).to.eql(
-          ['A','b','c'] // '[(A,[b,c,nil]),nil]'
+          ['A', 'b', 'c']
         );
         next();
       });
     });
-    describe("flatMap", (next) => {
+    describe("flatMap", (next?: any) => {
       it("flatMapを組み合わせる", (next) => {
         var input = List.fromString("abcdef");
-        var three = Parser.flatMap(Parser.item)((x) => {
-          return Parser.flatMap(Parser.item)((_) => {
-            return Parser.flatMap(Parser.item)((z) => {
-              return Parser.pure(Pair.cons(x,z));
+        var three = Parser.flatMap(Parser.item)((x: any) => {
+          return Parser.flatMap(Parser.item)((_: any) => {
+            return Parser.flatMap(Parser.item)((z: any) => {
+              return Parser.pure(Pair.cons(x, z));
             });
           });
         });
@@ -102,19 +100,18 @@ describe('パーサーコンビネーター', () => {
                 three(input)
               )))
         ).to.eql(
-          ['a','c'] // '[((a,c),[d,e,f,nil]),nil]'
+          ['a', 'c']
         );
         next();
       });
     });
-  }); // Parserモナド
-  describe("parse関数", (next) => {
+  });
+  describe("parse関数", (next?: any) => {
     it("itemは最初の一文字だけをパースする", (next) => {
       expect(
         List.isEmpty(
           Parser.item(List.empty())
         )
-        // PP.print(Parser.item(List.empty()))
       ).to.eql(
         []
       );
@@ -132,11 +129,11 @@ describe('パーサーコンビネーター', () => {
             Parser.parse(Parser.item)(List.fromString("abc"))
           )))
       ).to.eql(
-        ['b','c']
+        ['b', 'c']
       );
       next();
     });
-    describe("派生したパーサー", (next) => {
+    describe("派生したパーサー", (next?: any) => {
       it("lower", (next) => {
         expect(
           Pair.left(
@@ -146,7 +143,7 @@ describe('パーサーコンビネーター', () => {
               )(List.fromString("abc"))
             ))
         ).to.eql(
-          'a' //   '[(1,[2,3,nil]),nil]'
+          'a'
         );
         expect(
           List.toArray(Pair.right(
@@ -156,7 +153,7 @@ describe('パーサーコンビネーター', () => {
               )(List.fromString("abc"))
             )))
         ).to.eql(
-          ['b','c'] //   '[(1,[2,3,nil]),nil]'
+          ['b', 'c']
         );
         next();
       });
@@ -169,7 +166,7 @@ describe('パーサーコンビネーター', () => {
               )(List.fromString("123"))
             ))
         ).to.eql(
-          '1' //   '[(1,[2,3,nil]),nil]'
+          '1'
         );
         expect(
           List.toArray(Pair.right(
@@ -179,7 +176,7 @@ describe('パーサーコンビネーター', () => {
               )(List.fromString("123"))
             )))
         ).to.eql(
-          ['2','3'] //   '[(1,[2,3,nil]),nil]'
+          ['2', '3']
         );
         next();
       });
@@ -202,7 +199,7 @@ describe('パーサーコンビネーター', () => {
               )(List.fromString("abc123"))
             )))
         ).to.eql(
-          ['b','c','1','2','3']
+          ['b', 'c', '1', '2', '3']
         );
         next();
       });
@@ -225,7 +222,7 @@ describe('パーサーコンビネーター', () => {
               )(List.fromString("123"))
             )))
         ).to.eql(
-          ['2','3']
+          ['2', '3']
         );
         next();
       });
@@ -251,17 +248,15 @@ describe('パーサーコンビネーター', () => {
               )(List.fromString("abcdef"))
             ))
         ).to.eql(
-          ['abc','d','e','f']
-          // '[(abc,[d,e,f,nil]),nil]'
+          ['abc', 'd', 'e', 'f']
         );
         next();
       });
     });
-    describe("alternative", (next) => {
+    describe("alternative", (next?: any) => {
       it("alt", (next) => {
         var input = List.fromString("abc");
         expect(
-          // PP.print(
           List.toArray(
             List.head(
               Parser.parse(
@@ -269,8 +264,7 @@ describe('パーサーコンビネーター', () => {
               )(input)
             ))
         ).to.eql(
-          ['a','b','c']
-          // '[(a,[b,c,nil]),nil]'
+          ['a', 'b', 'c']
         );
         expect(
           List.toArray(
@@ -280,12 +274,12 @@ describe('パーサーコンビネーター', () => {
               )(input)
             ))
         ).to.eql(
-          ['d','a','b','c'] // '[(d,[a,b,c,nil]),nil]'
+          ['d', 'a', 'b', 'c']
         );
         next();
       });
     });
-    describe("反復パーサ", (next) => {
+    describe("反復パーサ", (next?: any) => {
       it("many digit", (next) => {
         expect(
           List.toArray(
@@ -296,7 +290,7 @@ describe('パーサーコンビネーター', () => {
                 )(List.fromString("123abc"))
               )))
         ).to.eql(
-          ['1','2','3'] // '[([1,2,3,nil],[a,b,c,nil]),nil]'
+          ['1', '2', '3']
         );
         expect(
           List.toArray(
@@ -307,7 +301,7 @@ describe('パーサーコンビネーター', () => {
                 )(List.fromString("abc"))
               )))
         ).to.eql(
-          [] // '[([],[a,b,c,nil]),nil]'
+          []
         );
         next();
       });
@@ -327,10 +321,10 @@ describe('パーサーコンビネーター', () => {
         const open = Parser.char("["),
           close = Parser.char("]"),
           comma = Parser.char(",");
-        const ints = (input) => {
-          return Parser.flatMap(open)(_ => {
-            return Parser.flatMap(Parser.sepby1(Parser.int)(comma))(ns => {
-              return Parser.flatMap(close)(_ => {
+        const ints = (input: any) => {
+          return Parser.flatMap(open)((_: any) => {
+            return Parser.flatMap(Parser.sepby1(Parser.int)(comma))((ns: any) => {
+              return Parser.flatMap(close)((_: any) => {
                 return Parser.pure(ns);
               });
             });
@@ -341,11 +335,11 @@ describe('パーサーコンビネーター', () => {
             Pair.left(
               List.head(
                 Parser.parse(
-                  ints 
+                  ints
                 )(List.fromString("[1,2,3]"))
               )))
         ).to.eql(
-          [1,2,3]
+          [1, 2, 3]
         );
         next();
       });
@@ -353,10 +347,10 @@ describe('パーサーコンビネーター', () => {
         const open = Parser.char("["),
           close = Parser.char("]"),
           comma = Parser.char(",");
-        const ints = (input) => {
-          return Parser.flatMap(open)(_ => {
-            return Parser.flatMap(Parser.sepby(Parser.int)(comma))(ns => {
-              return Parser.flatMap(close)(_ => {
+        const ints = (input: any) => {
+          return Parser.flatMap(open)((_: any) => {
+            return Parser.flatMap(Parser.sepby(Parser.int)(comma))((ns: any) => {
+              return Parser.flatMap(close)((_: any) => {
                 return Parser.pure(ns);
               });
             });
@@ -367,7 +361,7 @@ describe('パーサーコンビネーター', () => {
             Pair.left(
               List.head(
                 Parser.parse(
-                  ints 
+                  ints
                 )(List.fromString("[]"))
               )))
         ).to.eql(
@@ -379,7 +373,7 @@ describe('パーサーコンビネーター', () => {
         const open = Parser.char("["),
           close = Parser.char("]"),
           comma = Parser.char(",");
-        const ints = (input) => {
+        const ints = (input: any) => {
           return Parser.bracket(open, Parser.sepby1(Parser.int)(comma), close)(input);
         };
         expect(
@@ -387,11 +381,11 @@ describe('パーサーコンビネーター', () => {
             Pair.left(
               List.head(
                 Parser.parse(
-                  ints 
+                  ints
                 )(List.fromString("[1,2,3]"))
               )))
         ).to.eql(
-          [1,2,3]
+          [1, 2, 3]
         );
         next();
       });
@@ -422,7 +416,7 @@ describe('パーサーコンビネーター', () => {
       );
       next();
     });
-    it("int", function(next){
+    it("int", function (next) {
       this.timeout('5s');
       expect(
         Pair.left(
@@ -432,7 +426,7 @@ describe('パーサーコンビネーター', () => {
             )(List.fromString("-123 abc"))
           ))
       ).to.eql(
-        -123 // '[(-123,[a,b,c,nil]),nil]'
+        -123
       );
       expect(
         Pair.left(
@@ -446,7 +440,7 @@ describe('パーサーコンビネーター', () => {
       );
       next();
     });
-    it("float", function(next) {
+    it("float", function (next) {
       this.timeout('5s')
       expect(
         Pair.left(
@@ -456,7 +450,7 @@ describe('パーサーコンビネーター', () => {
             )(List.fromString("0.1"))
           ))
       ).to.eql(
-        0.1 // '[(0.1,[]),nil]'
+        0.1
       );
       expect(
         Pair.left(
@@ -466,7 +460,7 @@ describe('パーサーコンビネーター', () => {
             )(List.fromString("0.001"))
           ))
       ).to.eql(
-        0.001 // '[(0.1,[]),nil]'
+        0.001
       );
       expect(
         Pair.left(
@@ -476,7 +470,7 @@ describe('パーサーコンビネーター', () => {
             )(List.fromString("0.123"))
           ))
       ).to.eql(
-        0.123 // '[(0.123,[]),nil]'
+        0.123
       );
       expect(
         Pair.left(
@@ -486,7 +480,7 @@ describe('パーサーコンビネーター', () => {
             )(List.fromString("1.1"))
           ))
       ).to.eql(
-        1.1 // '[(1.1,[]),nil]'
+        1.1
       );
       expect(
         Pair.left(
@@ -510,7 +504,7 @@ describe('パーサーコンビネーター', () => {
       );
       next();
     });
-    it("numeric", function(next) {
+    it("numeric", function (next) {
       this.timeout('5s')
       expect(
         Pair.left(
@@ -521,7 +515,7 @@ describe('パーサーコンビネーター', () => {
           )
         )
       ).to.eql(
-        -123 
+        -123
       );
       expect(
         Pair.left(
@@ -567,11 +561,11 @@ describe('パーサーコンビネーター', () => {
             )(List.fromString("   abc"))
           )))
       ).to.eql(
-        ['a','b','c'] 
+        ['a', 'b', 'c']
       );
       next();
     });
-    it("comment", function(next){
+    it("comment", function (next) {
       this.timeout('5s');
       expect(
         Pair.isEmpty(
@@ -582,7 +576,7 @@ describe('パーサーコンビネーター', () => {
               )(List.fromString(";  "))
             )))
       ).to.eql(
-        true 
+        true
       );
       next();
     });
@@ -596,11 +590,11 @@ describe('パーサーコンビネーター', () => {
               )(List.fromString("  abc"))
             )))
       ).to.eql(
-        true 
+        true
       );
       next();
     });
-    describe("トークン", (next) => {
+    describe("トークン", (next?: any) => {
       it("natural", (next) => {
         expect(
           Pair.left(
@@ -610,7 +604,7 @@ describe('パーサーコンビネーター', () => {
               )(List.fromString("123   "))
             ))
         ).to.eql(
-          123 // '[(123,[]),nil]'
+          123
         );
         next();
       });
@@ -624,7 +618,7 @@ describe('パーサーコンビネーター', () => {
               )(List.fromString("abc   "))
             )).toString()
         ).to.eql(
-          'abc' // '[(Symbol(abc),[]),nil]'
+          'abc'
         );
         expect(
           List.toArray(
@@ -633,7 +627,7 @@ describe('パーサーコンビネーター', () => {
             )(List.fromString("define   "))
           )
         ).to.eql(
-          [] 
+          []
         );
         next();
       });
@@ -646,11 +640,11 @@ describe('パーサーコンビネーター', () => {
               )(List.fromString("-123   "))
             ))
         ).to.eql(
-          -123 // '[(-123,[]),nil]'
+          -123
         );
         next();
       });
-      it("boolean", function(next) {
+      it("boolean", function (next) {
         this.timeout('5s');
         expect(
           Pair.left(
@@ -661,7 +655,7 @@ describe('パーサーコンビネーター', () => {
             )
           )
         ).to.eql(
-          true 
+          true
         );
         expect(
           Pair.left(
@@ -672,7 +666,7 @@ describe('パーサーコンビネーター', () => {
             )
           )
         ).to.eql(
-          false 
+          false
         );
         next();
       });
@@ -685,7 +679,7 @@ describe('パーサーコンビネーター', () => {
               )(List.fromString("+  "))
             ))
         ).to.eql(
-          '+' // '[(+,[]),nil]'
+          '+'
         );
         next();
       });
@@ -699,62 +693,62 @@ describe('パーサーコンビネーター', () => {
             )
           )
         ).to.eql(
-          "abc" 
+          "abc"
         );
         next();
       });
     });
   });
-  describe("S式", (next) => {
-    it("atom", function(next) {
+  describe("S式", (next?: any) => {
+    it("atom", function (next) {
       this.timeout('5s');
       Exp.match(Pair.left(
-            List.head(
-              Parser.parse(
-                Parser.atom
-                )(List.fromString("123"))
-              )
-            ),{
-        atom: (value) => {
+        List.head(
+          Parser.parse(
+            Parser.atom
+          )(List.fromString("123"))
+        )
+      ), {
+        atom: (value: any) => {
           expect(value).to.eql(123)
         }
       })
       Exp.match(Pair.left(
-            List.head(
-              Parser.parse(
-                Parser.atom
-                )(List.fromString("-0.123"))
-              )
-            ),{
-        atom: (value) => {
+        List.head(
+          Parser.parse(
+            Parser.atom
+          )(List.fromString("-0.123"))
+        )
+      ), {
+        atom: (value: any) => {
           expect(value).to.eql(-0.123)
         }
       })
       Exp.match(Pair.left(
-            List.head(
-              Parser.parse(
-                Parser.atom
-                )(List.fromString("#t"))
-              )
-            ),{
-        atom: (value) => {
+        List.head(
+          Parser.parse(
+            Parser.atom
+          )(List.fromString("#t"))
+        )
+      ), {
+        atom: (value: any) => {
           expect(value).to.eql(true)
         }
       })
       Exp.match(Pair.left(
-            List.head(
-              Parser.parse(
-                Parser.atom
-                )(List.fromString("\"abc\""))
-              )
-            ),{
-        atom: (value) => {
+        List.head(
+          Parser.parse(
+            Parser.atom
+          )(List.fromString("\"abc\""))
+        )
+      ), {
+        atom: (value: any) => {
           expect(value).to.eql("abc")
         }
       })
       next();
     });
-    it("expression", function(next){
+    it("expression", function (next) {
       this.timeout('5s');
       Exp.match(Pair.left(
         List.head(
@@ -762,8 +756,8 @@ describe('パーサーコンビネーター', () => {
             Parser.expression
           )(List.fromString("#t"))
         )
-      ),{
-        atom: (value) => {
+      ), {
+        atom: (value: any) => {
           expect(value).to.eql(true)
         },
       })
@@ -773,8 +767,8 @@ describe('パーサーコンビネーター', () => {
             Parser.expression
           )(List.fromString("123"))
         )
-      ),{
-        atom: (value) => {
+      ), {
+        atom: (value: any) => {
           expect(value).to.eql(123)
         },
       })
@@ -784,14 +778,14 @@ describe('パーサーコンビネーター', () => {
             Parser.expression
           )(List.fromString("-123"))
         )
-      ),{
-        atom: (value) => {
+      ), {
+        atom: (value: any) => {
           expect(value).to.eql(-123)
         },
       })
       next();
     });
-    it("variable", function(next){
+    it("variable", function (next) {
       this.timeout('5s');
       Exp.match(Pair.left(
         List.head(
@@ -799,8 +793,8 @@ describe('パーサーコンビネーター', () => {
             Parser.variable
           )(List.fromString("xyz"))
         )
-      ),{
-        variable: (value) => {
+      ), {
+        variable: (value: any) => {
           expect(value).to.eql("xyz")
         }
       })
@@ -810,14 +804,14 @@ describe('パーサーコンビネーター', () => {
             Parser.variable
           )(List.fromString("dash-included"))
         )
-      ),{
-        variable: (value) => {
+      ), {
+        variable: (value: any) => {
           expect(value).to.eql("dash-included")
         }
       })
       next();
     });
-    it("application", function(next){
+    it("application", function (next) {
       this.timeout('5s');
       Exp.match(Pair.left(
         List.head(
@@ -825,10 +819,10 @@ describe('パーサーコンビネーター', () => {
             Parser.app
           )(List.fromString("(succ 1)"))
         )
-      ),{
-        app: (operator, operand) => {
-          Exp.match(operator,{
-            variable: (name) => {
+      ), {
+        app: (operator: any, operand: any) => {
+          Exp.match(operator, {
+            variable: (name: any) => {
               expect(name).to.eql("succ")
             }
           });
@@ -840,12 +834,12 @@ describe('パーサーコンビネーター', () => {
             Parser.app
           )(List.fromString("(plus 1 2)"))
         )
-      ),{
-        app: (operator, operand) => {
-          Exp.match(operator,{
-            app: (operator, operand) => {
+      ), {
+        app: (operator: any, operand: any) => {
+          Exp.match(operator, {
+            app: (operator: any, operand: any) => {
               Exp.match(operator, {
-                variable: (name) => {
+                variable: (name: any) => {
                   expect(name).to.eql("plus")
                 }
               });
@@ -855,7 +849,7 @@ describe('パーサーコンビネーター', () => {
       })
       next();
     });
-    it("lambda", function(next){
+    it("lambda", function (next) {
       this.timeout('5s');
       Exp.match(Pair.left(
         List.head(
@@ -863,15 +857,15 @@ describe('パーサーコンビネーター', () => {
             Parser.lambda
           )(List.fromString("(lambda (x) x)"))
         )
-      ),{
-        lambda: (variable, bodyExpression) => {
+      ), {
+        lambda: (variable: any, bodyExpression: any) => {
           Exp.match(variable, {
-            variable: (name) => {
+            variable: (name: any) => {
               expect(name).to.eql("x")
             }
           })
           Exp.match(bodyExpression, {
-            variable: (name) => {
+            variable: (name: any) => {
               expect(name).to.eql("x")
             }
           })
@@ -883,17 +877,17 @@ describe('パーサーコンビネーター', () => {
             Parser.lambda
           )(List.fromString("(lambda (y) (succ y))"))
         )
-      ),{
-        lambda: (variable, bodyExpression) => {
+      ), {
+        lambda: (variable: any, bodyExpression: any) => {
           Exp.match(variable, {
-            variable: (name) => {
+            variable: (name: any) => {
               expect(name).to.eql("y")
             }
           })
           Exp.match(bodyExpression, {
-            app: (operator, operands) => {
+            app: (operator: any, operands: any) => {
               Exp.match(operator, {
-                variable: (name) => {
+                variable: (name: any) => {
                   expect(name).to.eql("succ")
                 }
               })
@@ -901,44 +895,20 @@ describe('パーサーコンビネーター', () => {
           })
         }
       })
-      // Exp.match(Pair.left(
-      //   List.head(
-      //     Parser.parse(
-      //       Parser.lambda
-      //     )(List.fromString("(lambda (y) (plus y 1))"))
-      //   )
-      // ),{
-      //   lambda: (variable, bodyExpression) => {
-      //     Exp.match(variable, {
-      //       variable: (name) => {
-      //         expect(name).to.eql("y")
-      //       }
-      //     })
-      //     Exp.match(bodyExpression, {
-      //       list: (items) => {
-      //         Exp.match(List.head(items), {
-      //           variable: (name) => {
-      //             expect(name).to.eql("plus")
-      //           }
-      //         })
-      //       }
-      //     })
-      //   }
-      // })
       next();
     });
-    describe("lambda式をパースする",  ()  =>{
-      it("lambda式をlambdaでパースする", function(next){
+    describe("lambda式をパースする", () => {
+      it("lambda式をlambdaでパースする", function (next) {
         Exp.match(Pair.left(
           List.head(
             Parser.parse(
               Parser.lambda
             )(List.fromString("(lambda (n) n)"))
           )
-        ),{
-          lambda: (arg, body) => {
+        ), {
+          lambda: (arg: any, body: any) => {
             Exp.match(arg, {
-              variable: (value) => {
+              variable: (value: any) => {
                 expect(value).to.eql('n')
               }
             })
@@ -946,17 +916,17 @@ describe('パーサーコンビネーター', () => {
         })
         next();
       });
-      it("lambda式をexpressionでパースする", function(next){
+      it("lambda式をexpressionでパースする", function (next) {
         Exp.match(Pair.left(
           List.head(
             Parser.parse(
               Parser.expression
             )(List.fromString("(lambda (n) n)"))
           )
-        ),{
-          lambda: (arg, body) => {
+        ), {
+          lambda: (arg: any, body: any) => {
             Exp.match(arg, {
-              variable: (value) => {
+              variable: (value: any) => {
                 expect(value).to.eql('n')
               }
             })
@@ -965,8 +935,8 @@ describe('パーサーコンビネーター', () => {
         next();
       });
     });
-    describe("if式をパースする",  ()  =>{
-      it("if式をifExprでパースする", function(next){
+    describe("if式をパースする", () => {
+      it("if式をifExprでパースする", function (next) {
         this.timeout('5s');
         Exp.match(Pair.left(
           List.head(
@@ -974,10 +944,10 @@ describe('パーサーコンビネーター', () => {
               Parser.ifExpr
             )(List.fromString("(if #t 1 2)"))
           )
-        ),{
-          ifExpr: (predicate, consequent, alternative) => {
+        ), {
+          ifExpr: (predicate: any, consequent: any, alternative: any) => {
             Exp.match(predicate, {
-              atom: (value) => {
+              atom: (value: any) => {
                 expect(value).to.eql(true)
               }
             })
@@ -985,7 +955,7 @@ describe('パーサーコンビネーター', () => {
         })
         next();
       });
-      it("if式をexpressionでパースする", function(next){
+      it("if式をexpressionでパースする", function (next) {
         this.timeout('5s');
         Exp.match(Pair.left(
           List.head(
@@ -993,10 +963,10 @@ describe('パーサーコンビネーター', () => {
               Parser.expression
             )(List.fromString("(if #t 1 2)"))
           )
-        ),{
-          ifExpr: (predicate, consequent, alternative) => {
+        ), {
+          ifExpr: (predicate: any, consequent: any, alternative: any) => {
             Exp.match(predicate, {
-              atom: (value) => {
+              atom: (value: any) => {
                 expect(value).to.eql(true)
               }
             })
@@ -1005,8 +975,8 @@ describe('パーサーコンビネーター', () => {
         next();
       });
     });
-    describe("演算子をパースする",  ()  =>{
-      it("論理演算子をパースする", function(next){
+    describe("演算子をパースする", () => {
+      it("論理演算子をパースする", function (next) {
         this.timeout('5s');
         Exp.match(Pair.left(
           List.head(
@@ -1014,10 +984,10 @@ describe('パーサーコンビネーター', () => {
               Parser.expression
             )(List.fromString("(not #t)"))
           )
-        ),{
-          app: (operator, operand) => {
+        ), {
+          app: (operator: any, operand: any) => {
             Exp.match(operator, {
-              variable: (value) => {
+              variable: (value: any) => {
                 expect(value).to.eql("not")
               }
             })
@@ -1029,12 +999,12 @@ describe('パーサーコンビネーター', () => {
               Parser.app
             )(List.fromString("(and #t #f)"))
           )
-        ),{
-          app: (operator, operand) => {
-            Exp.match(operator,{
-              app: (operator, operand) => {
+        ), {
+          app: (operator: any, operand: any) => {
+            Exp.match(operator, {
+              app: (operator: any, operand: any) => {
                 Exp.match(operator, {
-                  variable: (name) => {
+                  variable: (name: any) => {
                     expect(name).to.eql("and")
                   }
                 });
@@ -1045,7 +1015,7 @@ describe('パーサーコンビネーター', () => {
         next();
       });
     });
-    describe("リストをパースする",  ()  =>{
+    describe("リストをパースする", () => {
       it("list", function (next) {
         this.timeout('30s');
         Exp.match(Pair.left(
@@ -1054,17 +1024,17 @@ describe('パーサーコンビネーター', () => {
               Parser.list
             )(List.fromString("'(1 2 3)"))
           )
-        ),{
-          list: (items) => {
+        ), {
+          list: (items: any) => {
             expect(List.length(items)).to.eql(3)
 
-            expect(array.map(List.toArray(items))(item => { 
+            expect(array.map(List.toArray(items))((item: any) => {
               return Exp.match(item, {
-                atom: (value) => {
+                atom: (value: any) => {
                   return value;
                 }
               })
-            })).to.eql([1,2,3])
+            })).to.eql([1, 2, 3])
           }
         })
         Exp.match(Pair.left(
@@ -1073,8 +1043,8 @@ describe('パーサーコンビネーター', () => {
               Parser.list
             )(List.fromString("'(a #t \"string\")"))
           )
-        ),{
-          list: (items) => {
+        ), {
+          list: (items: any) => {
             expect(List.length(items)).to.eql(3)
           }
         })
@@ -1084,8 +1054,8 @@ describe('パーサーコンビネーター', () => {
               Parser.list
             )(List.fromString("'(+ 1 2 3)"))
           )
-        ),{
-          list: (items) => {
+        ), {
+          list: (items: any) => {
             expect(List.length(items)).to.eql(4)
           }
         })
@@ -1095,8 +1065,8 @@ describe('パーサーコンビネーター', () => {
               Parser.list
             )(List.fromString("'(+ (- 1 2) 3)"))
           )
-        ),{
-          list: (items) => {
+        ), {
+          list: (items: any) => {
             expect(List.length(items)).to.eql(3)
           }
         })
@@ -1105,4 +1075,3 @@ describe('パーサーコンビネーター', () => {
     });
   });
 });
-

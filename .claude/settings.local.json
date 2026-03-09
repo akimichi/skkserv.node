@@ -6,7 +6,11 @@
       "Bash(NODE_ENV=test npx mocha:*)",
       "Bash(iconv:*)",
       "Bash(ls:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(node:*)",
+      "Bash(npm install:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx mocha:*)"
     ]
   }
 }

@@ -1,15 +1,15 @@
-"use strict;"
+import net = require('net');
 
-const env = process.env.NODE_ENV,
-  config = require('./lib/config.js')(env);
+const env = process.env.NODE_ENV as string;
+const config = require('./lib/config')(env);
 
-const net = require('net');
-const dictionary = require('./lib/dictionary.js');
-const skkService = require('./lib/service.js').skk;
-const server = net.createServer(skkService),
-  port = config.port;
+import dictionary = require('./lib/dictionary');
+import service = require('./lib/service');
 
-// 辞書ファイルのパスリスト
+const skkService = service.skk;
+const server = net.createServer(skkService);
+const port: number = config.port;
+
 const dictionaryFiles = [
   './resource/SKK-JISYO.L',
   './resource/SKK-JISYO.drug',
@@ -22,11 +22,10 @@ const dictionaryFiles = [
   './resource/SKK-JISYO.medical',
 ];
 
-// 辞書を読み込み
 console.log('Loading dictionary files...');
 dictionary.load(dictionaryFiles);
 
 server.listen(port, '0.0.0.0', () => {
-  const addr = server.address();
+  const addr = server.address() as net.AddressInfo;
   console.log(`Listening Start on Server - ${addr.address}:${addr.port}`);
 });

@@ -1,6 +1,4 @@
-'use strict';
-
-const dictionary = require('../lib/dictionary.js');
+import dictionary = require('../lib/dictionary');
 
 before(async function () {
   this.timeout('15s');

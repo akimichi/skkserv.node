@@ -1,28 +1,25 @@
-'use strict';
-
-const expect = require('expect.js'),
-  net = require('net');
-const service = require('../lib/service.js');
+import expect = require('expect.js');
+import net = require('net');
+import service = require('../lib/service');
 
 describe('SKKサービス', () => {
   const skkService = service.skk;
   const testPort = 11112;
-  // サーバーインスタンスはテスト毎に再利用する
-  let testServer = null;
+  let testServer: net.Server | null = null;
 
   beforeEach(() => {
     testServer = net.createServer(skkService);
     testServer.listen(testPort, '127.0.0.1', () => {
-      const addr = testServer.address();
+      const addr = testServer!.address() as net.AddressInfo;
       console.log(`Start a Test Server - ${addr.address}:${addr.port}`);
     });
   });
   afterEach(() => {
-     testServer.close();
+    testServer!.close();
   });
 
-  it('リクエスト"2 "でバージョンを返す', (done)  => {
-    const testClient = net.connect(testPort, () => {
+  it('リクエスト"2 "でバージョンを返す', (done) => {
+    const testClient = net.connect(testPort, '127.0.0.1', () => {
       testClient.write("2 ");
     });
     testClient.on('data', (response) => {
@@ -34,39 +31,25 @@ describe('SKKサービス', () => {
       done();
     });
   });
-  // it('should receive a message event from single data event', (done)  => {
-  //   const testClient = net.connect(testPort, () => {
-  //     testClient.write("abcdefg");
-  //   });
-  //   testClient.on('data', (response) => {
-  //     expect(
-  //       response.toString()
-  //     ).to.equal(
-  //       'abcdefg'
-  //     )
-  //     done();
-  //   });
-  // });
 });
 describe('echoサービス', () => {
   const echoService = service.echo;
   const testPort = 11113;
-  // サーバーインスタンスはテスト毎に再利用する
-  let testServer = null;
+  let testServer: net.Server | null = null;
 
   beforeEach(() => {
     testServer = net.createServer(echoService);
     testServer.listen(testPort, '127.0.0.1', () => {
-      const addr = testServer.address();
+      const addr = testServer!.address() as net.AddressInfo;
       console.log(`Start a Test Server - ${addr.address}:${addr.port}`);
     });
   });
   afterEach(() => {
-     testServer.close();
+    testServer!.close();
   });
 
-  it('リクエストと同じ内容を返す', (done)  => {
-    const testClient = net.connect(testPort, () => {
+  it('リクエストと同じ内容を返す', (done) => {
+    const testClient = net.connect(testPort, '127.0.0.1', () => {
       testClient.write("this is a test");
     });
     testClient.on('data', (response) => {

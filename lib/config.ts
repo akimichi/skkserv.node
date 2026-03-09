@@ -1,7 +1,13 @@
-'use strict';
+interface Config {
+  port: number;
+}
 
-const CONFIG = (env) => {
-  const json = {
+interface ConfigMap {
+  [key: string]: Config;
+}
+
+const CONFIG = (env: string): Config => {
+  const json: ConfigMap = {
     "test": {
       "port": 1179
     },
@@ -19,4 +25,4 @@ const CONFIG = (env) => {
   return json[env];
 };
 
-module.exports = CONFIG;
+export = CONFIG;

@@ -3,30 +3,28 @@ skkserv.node
 
 ## 概要
 
-node.jsで書かれたskkサーバーである。
+- Node.jsで実装されたSKKサーバー
+- 辞書データはサーバー起動時にメモリに読み込まれる
+- 内部にLisp評価器を含み、SKKプロトコルに加えてLisp式の評価も可能(experimental)
 
-- バックエンドDBは、mongodb
-- lisp式の評価が可能(experimental)
-
-## 事前準備
-
-1. mongodbサーバーを準備する
-1. .env を作成し、MONGODB_URI を設定する
-
-
-## production 
+## 起動
 
 ~~~
-$ npm run seed
-$ npm run start
-~~~
+# 開発サーバー起動（ポート1179）
+npm run start
 
+# 本番サーバー起動（ポート1178）
+npm run start-prod
+~~~
 
 ## test
 
 ~~~
-$ nvm use
-$ npm test
+# テスト実行
+npm test
+
+# 特定のテストファイルを実行
+NODE_ENV=test npx mocha --require ts-node/register test/lisp/interpreter.spec.ts
 ~~~
 
 

@@ -33,7 +33,25 @@ const Self = {
               console.log(`err: ${errMessage}`);
               connection.write(`4${errMessage}`);
             }
+          } else if(yomi.startsWith("=")){
+            try {
+              const arithExpr = yomi.substring(1);
+              const answer = await dictionary.runArith(arithExpr);
+              if (Array.isArray(answer)) {
+                const candidates = answer.join("/");
+                console.log(`response: ${candidates}`);
+                connection.write(`1/${candidates}/\n`);
+              } else {
+                console.log(`response: ${answer}`);
+                connection.write(`1/${answer}/\n`);
+              }
+            } catch (errMessage) {
+              console.log(`err: ${errMessage}`);
+              connection.write(`4${errMessage}`);
+            }
+
           } else {
+
             try {
               const response = await dictionary.henkan(yomi);
               const candidates = response.join("/");

@@ -18,6 +18,21 @@ describe('SKKサービス', () => {
     testServer!.close();
   });
 
+  it('リクエスト"1=2+3"で四則演算の結果を返す', function (done) {
+    this.timeout('5s');
+    const testClient = net.connect(testPort, '127.0.0.1', () => {
+      testClient.write("1=2+3 ");
+    });
+    testClient.on('data', (response) => {
+      expect(
+        response.toString()
+      ).to.equal(
+        '1/5/\n'
+      )
+      done();
+    });
+  });
+
   it('リクエスト"2 "でバージョンを返す', (done) => {
     const testClient = net.connect(testPort, '127.0.0.1', () => {
       testClient.write("2 ");

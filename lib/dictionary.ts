@@ -2,8 +2,9 @@ import fs = require('fs');
 import iconvLite = require('iconv-lite');
 
 const Either = require('kansuu.js').either;
+import ArithInterpreter = require('./arith/interpreter');
 
-import Interpreter = require('./lisp/interpreter');
+import LispInterpreter = require('./lisp/interpreter');
 import Env = require('./lisp/env');
 const preludeEnv = Env.prelude(Env.empty);
 
@@ -52,7 +53,20 @@ const henkan = async (yomi: string): Promise<string[]> => {
 
 const runLisp = (yomi: string): Promise<any> => {
   return new Promise((resolve, reject) => {
-    Either.match(Interpreter.run(yomi)(preludeEnv), {
+    Either.match(LispInterpreter.run(yomi)(preludeEnv), {
+      right: (value: any) => {
+        resolve(value);
+      },
+      left: (errMessage: any) => {
+        reject(errMessage);
+      },
+    });
+  });
+};
+
+const runArith = (yomi: string): Promise<any> => {
+  return new Promise((resolve, reject) => {
+    Either.match(ArithInterpreter.run(yomi), {
       right: (value: any) => {
         resolve(value);
       },
@@ -79,6 +93,7 @@ export = {
   load,
   henkan,
   runLisp,
+  runArith,
   clear,
   add,
   size,

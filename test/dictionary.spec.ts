@@ -43,6 +43,33 @@ describe('Dictionary module', () => {
     });
   });
 
+  describe('runArith', () => {
+    it('四則演算を評価できる', async function () {
+      this.timeout('5s');
+      const result = await dictionary.runArith('1 + 2');
+      expect(result).to.equal(3);
+    });
+    it('演算子の優先順位が正しい', async function () {
+      this.timeout('5s');
+      const result = await dictionary.runArith('1 + 2 * 3');
+      expect(result).to.equal(7);
+    });
+    it('括弧で優先順位を変更できる', async function () {
+      this.timeout('5s');
+      const result = await dictionary.runArith('(1 + 2) * 3');
+      expect(result).to.equal(9);
+    });
+    it('ゼロ除算はエラーになる', async function () {
+      this.timeout('5s');
+      try {
+        await dictionary.runArith('1 / 0');
+        expect().fail('should throw');
+      } catch (err) {
+        expect(err).to.equal('ゼロで割ることはできません');
+      }
+    });
+  });
+
   describe('load', () => {
     it('辞書ファイルを読み込める', function () {
       this.timeout('10s');

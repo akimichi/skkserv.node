@@ -3,6 +3,7 @@ import iconvLite = require('iconv-lite');
 
 const Either = require('kansuu.js').either;
 import ArithInterpreter = require('./arith/interpreter');
+import DatetimeInterpreter = require('./datetime/interpreter');
 
 import LispInterpreter = require('./lisp/interpreter');
 import Env = require('./lisp/env');
@@ -77,6 +78,19 @@ const runArith = (yomi: string): Promise<any> => {
   });
 };
 
+const runDatetime = (input: string): Promise<any> => {
+  return new Promise((resolve, reject) => {
+    Either.match(DatetimeInterpreter.run(input), {
+      right: (value: any) => {
+        resolve(value);
+      },
+      left: (errMessage: any) => {
+        reject(errMessage);
+      },
+    });
+  });
+};
+
 const clear = (): void => {
   dictionary.clear();
 };
@@ -94,6 +108,7 @@ export = {
   henkan,
   runLisp,
   runArith,
+  runDatetime,
   clear,
   add,
   size,

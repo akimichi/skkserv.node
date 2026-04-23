@@ -50,6 +50,23 @@ const Self = {
               connection.write(`4${errMessage}`);
             }
 
+          } else if(yomi.startsWith("@")){
+            try {
+              const dateExpr = yomi.substring(1);
+              const answer = await dictionary.runDatetime(dateExpr);
+              if (Array.isArray(answer)) {
+                const candidates = answer.join("/");
+                console.log(`response: ${candidates}`);
+                connection.write(`1/${candidates}/\n`);
+              } else {
+                console.log(`response: ${answer}`);
+                connection.write(`1/${answer}/\n`);
+              }
+            } catch (errMessage) {
+              console.log(`err: ${errMessage}`);
+              connection.write(`4${errMessage}`);
+            }
+
           } else {
 
             try {
